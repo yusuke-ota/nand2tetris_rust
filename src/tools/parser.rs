@@ -1,6 +1,6 @@
 use std::fs::File;
 use std::io::{BufReader, BufRead};
-use crate::lib::*;
+use crate::tools::*;
 
 pub struct Parser{
     buffer: Vec<String>,

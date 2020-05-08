@@ -1,4 +1,4 @@
-use crate::lib::*;
+use crate::tools::*;
 
 pub fn dest(dest_type: DestType) -> [i32;3] {
     return match dest_type {

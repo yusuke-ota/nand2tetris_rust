@@ -1,10 +1,10 @@
 use std::env;
 use std::fs::File;
 use std::io::Write;
-use asembler::lib::parser::Parser;
-use asembler::lib::enums::*;
+use asembler::tools::parser::Parser;
+use asembler::tools::enums::*;
 use std::ops::Add;
-use asembler::lib::*;
+use asembler::tools::*;
 
 fn main() {
     let args = env::args().collect::<Vec<String>>();
