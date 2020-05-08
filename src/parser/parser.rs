@@ -66,14 +66,14 @@ impl Parser{
         let c_command = c_command.chars().collect::<Vec<char>>();
         let dest = c_command[10..13].iter().map(|&iter| iter as i32 - 48).collect::<[i32;3]>();
         return match dest {
-            dest if dest == [0, 0, 0] => Ok(DestType::Null),
-            dest if dest == [0, 0, 1] => Ok(DestType::M),
-            dest if dest == [0, 1, 0] => Ok(DestType::D),
-            dest if dest == [0, 1, 1] => Ok(DestType::MD),
-            dest if dest == [1, 0, 0] => Ok(DestType::A),
-            dest if dest == [1, 0, 1] => Ok(DestType::AM),
-            dest if dest == [1, 1, 0] => Ok(DestType::AD),
-            dest if dest == [1, 1, 1] => Ok(DestType::AMD),
+            [0, 0, 0] => Ok(DestType::Null),
+            [0, 0, 1] => Ok(DestType::M),
+            [0, 1, 0] => Ok(DestType::D),
+            [0, 1, 1] => Ok(DestType::MD),
+            [1, 0, 0] => Ok(DestType::A),
+            [1, 0, 1] => Ok(DestType::AM),
+            [1, 1, 0] => Ok(DestType::AD),
+            [1, 1, 1] => Ok(DestType::AMD),
             _ => Err("Dest parse error!")
         }
     }
@@ -87,9 +87,36 @@ impl Parser{
         let c_command = c_command.chars().collect::<Vec<char>>();
         let comp = c_command[3..10].iter().map(|&iter| iter as i32 - 48).collect::<[i32;7]>();
         return match comp {
-            comp if [0, 0, 0, 0, 0, 0, 0] => CompType
+            [0, 1, 0, 1, 0, 1, 0] => Ok(CompType::Zero),
+            [0, 1, 1, 1, 1, 1, 1] => Ok(CompType::One),
+            [0, 1, 1, 1, 0, 1, 0] => Ok(CompType::MinusOne),
+            [0, 0, 0, 1, 1, 0, 0] => Ok(CompType::D),
+            [0, 1, 1, 0, 0, 0, 0] => Ok(CompType::A),
+            [0, 0, 0, 1, 1, 0, 1] => Ok(CompType::NotD),
+            [0, 1, 1, 0, 0, 0, 1] => Ok(CompType::NotA),
+            [0, 0, 0, 1, 1, 1, 1] => Ok(CompType::MinusD),
+            [0, 1, 1, 0, 0, 1, 1] => Ok(CompType::MinusA),
+            [0, 0, 1, 1, 1, 1, 1] => Ok(CompType::DPlusOne),
+            [0, 1, 1, 0, 1, 1, 1] => Ok(CompType::APlusOne),
+            [0, 0, 0, 1, 1, 1, 0] => Ok(CompType::DMinusOne),
+            [0, 1, 1, 0, 0, 1, 0] => Ok(CompType::AMinusOne),
+            [0, 0, 0, 0, 0, 1, 0] => Ok(CompType::DPlusA),
+            [0, 1, 0, 0, 0, 1, 1] => Ok(CompType::DMinusA),
+            [0, 0, 0, 0, 1, 1, 1] => Ok(CompType::AMinusD),
+            [0, 0, 0, 0, 0, 0, 0] => Ok(CompType::DAndA),
+            [0, 0, 1, 0, 1, 0, 1] => Ok(CompType::DOrA),
+            [1, 1, 1, 0, 0, 0, 0] => Ok(CompType::M),
+            [1, 1, 1, 0, 0, 0, 1] => Ok(CompType::NotM),
+            [1, 1, 1, 0, 0, 1, 1] => Ok(CompType::MinusM),
+            [1, 1, 1, 0, 1, 1, 1] => Ok(CompType::MPlusOne),
+            [1, 1, 1, 0, 0, 1, 0] => Ok(CompType::MMinusOne),
+            [1, 0, 0, 0, 0, 1, 0] => Ok(CompType::DPlusM),
+            [1, 1, 0, 0, 0, 1, 1] => Ok(CompType::DMinusM),
+            [1, 0, 0, 0, 1, 1, 1] => Ok(CompType::MMinusD),
+            [1, 0, 0, 0, 0, 0, 0] => Ok(CompType::DAndM),
+            [1, 0, 1, 0, 1, 0, 1] => Ok(CompType::DOrM),
+            _ => Err("Unexpected value of Comp")
         }
-
     }
 
     fn jump(&self) -> Result<JumpType, Result::Err>{
@@ -101,14 +128,14 @@ impl Parser{
         let c_command = c_command.chars().collect::<Vec<char>>();
         let jump = c_command[13..=16].iter().map(|&iter| iter as i32 - 48).collect::<[i32;3]>();
         return match jump {
-            jump if jump == [0, 0, 0] => Ok(JumpType::Null),
-            jump if jump == [0, 0, 1] => Ok(JumpType::JGT),
-            jump if jump == [0, 1, 0] => Ok(JumpType::JEQ),
-            jump if jump == [0, 1, 1] => Ok(JumpType::JGE),
-            jump if jump == [1, 0, 0] => Ok(JumpType::JLT),
-            jump if jump == [1, 0, 1] => Ok(JumpType::JNE),
-            jump if jump == [1, 1, 0] => Ok(JumpType::JLE),
-            jump if jump == [1, 1, 1] => Ok(JumpType::JMP),
+            [0, 0, 0] => Ok(JumpType::Null),
+            [0, 0, 1] => Ok(JumpType::JGT),
+            [0, 1, 0] => Ok(JumpType::JEQ),
+            [0, 1, 1] => Ok(JumpType::JGE),
+            [1, 0, 0] => Ok(JumpType::JLT),
+            [1, 0, 1] => Ok(JumpType::JNE),
+            [1, 1, 0] => Ok(JumpType::JLE),
+            [1, 1, 1] => Ok(JumpType::JMP),
             _ => Err("Jump parse error!")
         }
     }
