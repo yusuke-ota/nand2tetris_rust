@@ -2,13 +2,14 @@ use std::fs::File;
 use std::io::{BufReader, BufRead};
 use crate::tools::*;
 
-pub struct Parser{
+#[derive(Clone)]
+pub struct Parser {
     buffer: Vec<String>,
-    command: Option<String>
+    command: Option<String>,
 }
 
 impl Parser{
-    pub fn new(mut file: File) -> Self{
+    pub fn new(file: File) -> Self{
         let mut buf_reader = BufReader::new(file);
         let mut buf = String::new();
         let mut buffer = Vec::new();
@@ -39,16 +40,16 @@ impl Parser{
     }
 
     pub fn command_type(&self) -> CommandType{
-        let first_char = self.command.unwrap().chars().next();
+        let first_char = self.command.as_ref().unwrap().chars().next();
         return match first_char {
-            Some(first_char) if first_char == "@".parse().unwrap() => CommandType::ACommand(self.command.unwrap()),
-            Some(first_char) if first_char == "(".parse().unwrap() => CommandType::LCommand(self.command.unwrap()),
-            Some(first_char) => CommandType::CCommand(self.command.unwrap()),
+            Some(first_char) if first_char == "@".parse().unwrap() => CommandType::ACommand(self.command.clone().unwrap()),
+            Some(first_char) if first_char == "(".parse().unwrap() => CommandType::LCommand(self.command.clone().unwrap()),
+            Some(_) => CommandType::CCommand(self.command.clone().unwrap()),
             _ => panic!("Can'not detect command type!")
         }
     }
 
-    pub fn symbol(&self) -> Result<Symbol, Result::Err>{
+    pub fn symbol(&self) -> Result<Symbol, &'static str>{
         let command_type = self.command_type();
         return match command_type {
             CommandType::ACommand(command) => Ok(classification_symbol(command)),
@@ -57,19 +58,31 @@ impl Parser{
         }
     }
 
-    pub fn dest(&self) -> Result<DestType, Result::Err>{
-        let mut c_command = String::with_capacity(16);
+    pub fn dest(&self) -> Result<DestType, &'static str>{
+        let c_command;
         match self.command_type() {
             CommandType::CCommand(command) => c_command = command,
             _ => return Err("This type is not CCommand!")
         }
-        let separate_place = c_command.find(|char: char| char == "=" as char || char == ";" as char);
-        let mut dest_string = String::with_capacity(4);
+        let mut tmp = [0; 4];
+        let separate_place = c_command.find(|char: char| char.encode_utf8(&mut tmp) == "=" || char.encode_utf8(&mut tmp) == ";");
+        let dest_string;
         match separate_place {
-            Some(num) => dest_string = c_command[0..separate_place].to_string(),
+            Some(num) => dest_string = c_command[0..num].to_string(),
+            // Some(num) => dest_string = {
+            //     let mut chars = c_command.chars();
+            //     let mut counter:usize = 0;
+            //     let mut dest_string = String::with_capacity(num);
+            //     while counter <= num {
+            //         dest_string.push(chars.nth(0).unwrap());
+            //         counter += 1;
+            //     };
+            //     dest_string
+            // },
             None => return Err("Cannot found '=' or ';'")
         }
-        return match dest_string as &str {
+        let dest_string: &str = &dest_string;
+        return match dest_string {
             "null" => Ok(DestType::Null),
             "M" => Ok(DestType::M),
             "D" => Ok(DestType::D),
@@ -82,19 +95,20 @@ impl Parser{
         }
     }
 
-    pub fn comp(&self) -> Result<CompType, Result::Err>{
-        let mut c_command = String::with_capacity(16);
+    pub fn comp(&self) -> Result<CompType, &'static str>{
+        let c_command;
         match self.command_type() {
             CommandType::CCommand(command) => c_command = command,
             _ => return Err("This type is not CCommand!")
         }
         let separate_place = c_command.find("=");
-        let mut comp_string = String::with_capacity(4);
+        let comp_string;
         match separate_place {
-            Some(num) => comp_string = c_command[separate_place..].to_string(),
+            Some(num) => comp_string = c_command[num..].to_string(),
             None => return Err("Cannot found '='")
         }
-        return match comp_string as &str {
+        let comp_string: &str = &comp_string;
+        return match comp_string {
             "0" => Ok(CompType::Zero),
             "1" => Ok(CompType::One),
             "-1" => Ok(CompType::MMinusOne),
@@ -127,19 +141,20 @@ impl Parser{
         }
     }
 
-    pub fn jump(&self) -> Result<JumpType, Result::Err>{
-        let mut c_command = String::with_capacity(16);
+    pub fn jump(&self) -> Result<JumpType, &'static str>{
+        let c_command;
         match self.command_type() {
             CommandType::CCommand(command) => c_command = command,
             _ => return Err("This type is not CCommand!")
         }
         let separate_place = c_command.find(";");
-        let mut jump_string = String::with_capacity(4);
+        let jump_string;
         match separate_place {
-            Some(num) => jump_string = c_command[separate_place..].to_string(),
+            Some(num) => jump_string = c_command[num..].to_string(),
             None => return Err("Cannot found ';'")
         }
-        return match jump_string as &str {
+        let jump_string: &str = &jump_string;
+        return match jump_string {
             "null" => Ok(JumpType::Null),
             "JGT" => Ok(JumpType::JGT),
             "JEQ" => Ok(JumpType::JEQ),

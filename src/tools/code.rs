@@ -1,6 +1,6 @@
 use crate::tools::*;
 
-pub fn dest(dest_type: DestType) -> [i32;3] {
+pub fn dest(dest_type: DestType) -> [u8;3] {
     return match dest_type {
         DestType::Null => [0, 0, 0],
         DestType::M => [0, 0, 1],
@@ -13,7 +13,7 @@ pub fn dest(dest_type: DestType) -> [i32;3] {
     }
 }
 
-pub fn jump(jump_type: JumpType) -> [i32;3]{
+pub fn jump(jump_type: JumpType) -> [u8;3]{
     return match jump_type {
         JumpType::Null => [0, 0, 0],
         JumpType::JGT => [0, 0, 1],
@@ -26,7 +26,7 @@ pub fn jump(jump_type: JumpType) -> [i32;3]{
     }
 }
 
-pub fn comp(comp_type: CompType) -> [i32;7]{
+pub fn comp(comp_type: CompType) -> [u8;7]{
     return match comp_type {
         CompType::Zero => [0, 1, 0, 1, 0, 1, 0],
         CompType::One => [0, 1, 1, 1, 1, 1, 1],
