@@ -119,7 +119,7 @@ impl Parser{
         return match comp_string {
             "0" => Ok(CompType::Zero),
             "1" => Ok(CompType::One),
-            "-1" => Ok(CompType::MMinusOne),
+            "-1" => Ok(CompType::MinusOne),
             "D" => Ok(CompType::D),
             "A" => Ok(CompType::A),
             "!D" => Ok(CompType::NotD),
@@ -134,7 +134,7 @@ impl Parser{
             "D-A" => Ok(CompType::DMinusA),
             "A-D" => Ok(CompType::AMinusD),
             "D&A" => Ok(CompType::DAndA),
-            "D||A" => Ok(CompType::DOrA),
+            "D|A" => Ok(CompType::DOrA),
             "M" => Ok(CompType::M),
             "!M" => Ok(CompType::NotM),
             "-M" => Ok(CompType::MinusM),
@@ -144,9 +144,9 @@ impl Parser{
             "D-M" => Ok(CompType::DMinusM),
             "M-D" => Ok(CompType::MMinusD),
             "D&M" => Ok(CompType::DAndM),
-            "D||M" => Ok(CompType::DOrM),
-            _ => Err("Unexpected value of Comp")
-        }
+            "D|M" => Ok(CompType::DOrM),
+            _ => Err("Unexpected value of Comp"),
+        };
     }
 
     pub fn jump(&self) -> Result<JumpType, &'static str>{
