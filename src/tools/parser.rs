@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::{BufReader, BufRead};
 use crate::tools::*;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Parser {
     buffer: Vec<String>,
     command: Option<String>,
@@ -20,7 +20,9 @@ impl Parser{
             }
             buf.clear();
         }
-
+        // pop以外のメソッドで、配列から順序を崩さずに値を取り出すことができない
+        // なので、reverse()して、配列の最後尾(実質頭)から値を取り出す
+        buffer.reverse();
         Self{
             buffer,
             command: Option::None
@@ -114,7 +116,7 @@ impl Parser{
         let separate_place = c_command.find("=");
         let comp_string;
         match separate_place {
-            Some(num) => comp_string = c_command[num..].to_string(),
+            Some(num) => comp_string = c_command[num+1..].to_string(),
             None => return Err("Cannot found '='")
         }
         let comp_string: &str = &comp_string;
