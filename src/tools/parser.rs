@@ -56,8 +56,14 @@ impl Parser{
     pub fn symbol(&self) -> Result<Symbol, &'static str>{
         let command_type = self.command_type();
         return match command_type {
-            CommandType::ACommand(command) => Ok(classification_symbol(command)),
-            CommandType::LCommand(command) => Ok(classification_symbol(command)),
+            CommandType::ACommand(command) => {
+                let num = command.trim_start_matches('@');
+                Ok(classification_symbol(num))
+            },
+            CommandType::LCommand(command) => {
+                let symbol = command.trim_start_matches('(').trim_end_matches(')');
+                Ok(classification_symbol(symbol))
+            },
             _ => Err("This type is not ACommand or LCommand!")
         }
     }

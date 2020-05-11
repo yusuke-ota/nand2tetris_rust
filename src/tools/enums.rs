@@ -9,10 +9,10 @@ pub enum Symbol{
     Symbol(String)
 }
 
-pub fn classification_symbol(symbol: String) -> Symbol{
+pub fn classification_symbol(symbol: &str) -> Symbol{
     return match symbol.parse::<i32>() {
         Ok(num) => Symbol::Address(num),
-        Err(_) => Symbol::Symbol(symbol)
+        Err(_) => Symbol::Symbol(symbol.to_string())
     }
 }
 
