@@ -50,7 +50,7 @@ impl Parser{
         return match first_char {
             '@' => CommandType::ACommand(self.command.clone().unwrap()),
             '(' => CommandType::LCommand(self.command.clone().unwrap()),
-            'A' | 'D' | 'M' => CommandType::CCommand(self.command.clone().unwrap()),
+            'A' | 'D' | 'M' | '0' => CommandType::CCommand(self.command.clone().unwrap()),
             _ => panic!("Can'not detect command type!")
         }
     }
@@ -76,26 +76,15 @@ impl Parser{
             CommandType::CCommand(command) => c_command = command,
             _ => return Err("This type is not CCommand!")
         }
-        let mut tmp = [0; 4];
-        let separate_place = c_command.find(|char: char| char.encode_utf8(&mut tmp) == "=" || char.encode_utf8(&mut tmp) == ";");
+        let separate_place = c_command.find('=');
         let dest_string;
         match separate_place {
             Some(num) => dest_string = c_command[0..num].to_string(),
-            // Some(num) => dest_string = {
-            //     let mut chars = c_command.chars();
-            //     let mut counter:usize = 0;
-            //     let mut dest_string = String::with_capacity(num);
-            //     while counter <= num {
-            //         dest_string.push(chars.nth(0).unwrap());
-            //         counter += 1;
-            //     };
-            //     dest_string
-            // },
-            None => return Err("Cannot found '=' or ';'")
+            None => return Err("Cannot found =")
         }
         let dest_string: &str = &dest_string;
         return match dest_string {
-            "null" => Ok(DestType::Null),
+            "0" => Ok(DestType::Null),
             "M" => Ok(DestType::M),
             "D" => Ok(DestType::D),
             "MD" => Ok(DestType::MD),
@@ -113,12 +102,19 @@ impl Parser{
             CommandType::CCommand(command) => c_command = command,
             _ => return Err("This type is not CCommand!")
         }
-        let separate_place = c_command.find("=");
         let comp_string;
-        match separate_place {
-            Some(num) => comp_string = c_command[num+1..].to_string(),
-            None => return Err("Cannot found '='")
-        }
+        let separate_place_equal = c_command.find('=');
+        let separate_place_semi_colon = c_command.find(';');
+        if separate_place_equal.is_some() {
+            let num = separate_place_equal.unwrap();
+            comp_string = c_command[num + 1..].to_string();
+        } else if separate_place_semi_colon.is_some() {
+            let num = separate_place_semi_colon.unwrap();
+            comp_string = c_command[0..num].to_string();
+        } else {
+            return Err("Cannot found = or ;")
+        };
+
         let comp_string: &str = &comp_string;
         return match comp_string {
             "0" => Ok(CompType::Zero),
@@ -162,8 +158,8 @@ impl Parser{
         let separate_place = c_command.find(";");
         let jump_string;
         match separate_place {
-            Some(num) => jump_string = c_command[num..].to_string(),
-            None => return Err("Cannot found ';'")
+            Some(num) => jump_string = c_command[num+1..].to_string(),
+            None => return Err("Cannot found ;")
         }
         let jump_string: &str = &jump_string;
         return match jump_string {
