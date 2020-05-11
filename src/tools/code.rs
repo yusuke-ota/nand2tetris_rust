@@ -52,7 +52,7 @@ pub fn comp(comp_type: CompType) -> [u8;7]{
         CompType::MPlusOne => [1, 1, 1, 0, 1, 1, 1],
         CompType::MMinusOne => [1, 1, 1, 0, 0, 1, 0],
         CompType::DPlusM => [1, 0, 0, 0, 0, 1, 0],
-        CompType::DMinusM => [1, 1, 0, 0, 0, 1, 1],
+        CompType::DMinusM => [1, 0, 1, 0, 0, 1, 1],
         CompType::MMinusD => [1, 0, 0, 0, 1, 1, 1],
         CompType::DAndM => [1, 0, 0, 0, 0, 0, 0],
         CompType::DOrM => [1, 0, 1, 0, 1, 0, 1],
