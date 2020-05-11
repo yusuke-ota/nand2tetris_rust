@@ -5,7 +5,7 @@ use asembler::tools::{*,parser::Parser};
 
 fn main() {
     let args = env::args().collect::<Vec<String>>();
-    let file = File::open(&args[0]).unwrap_or_else(|_| panic!("not found: {:?}", args));
+    let file = File::open(&args[1]).unwrap_or_else(|_| panic!("not found: {:?}", args));
     let mut parser = Parser::new(file);
 
     let mut write_string = String::new();
@@ -27,6 +27,7 @@ fn main() {
         }
         write_string.push_str("\n");
     }
-    let mut output_file = File::create(format!("{}.hack", args[0])).unwrap_or_else(|_| panic!("same file exist"));
+    let asm_extension: &[_] = &['.', 'a', 's', 'm'];
+    let mut output_file = File::create(format!("{}.hack", args[1].trim_end_matches(asm_extension))).unwrap_or_else(|_| panic!("same file exist"));
     output_file.write_all(write_string.as_bytes()).unwrap_or_else(|_| panic!("write is failed"));
 }

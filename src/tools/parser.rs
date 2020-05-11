@@ -14,7 +14,11 @@ impl Parser{
         let mut buf = String::new();
         let mut buffer = Vec::new();
         while buf_reader.read_line(&mut buf).unwrap_or(0) > 0{
-            buffer.push(buf.trim().to_string());
+            let trim_buf = buf.trim_end();
+            if !trim_buf.starts_with('/') && trim_buf != "" {
+            buffer.push(trim_buf.to_string());
+            }
+            buf.clear();
         }
 
         Self{
@@ -40,11 +44,11 @@ impl Parser{
     }
 
     pub fn command_type(&self) -> CommandType{
-        let first_char = self.command.as_ref().unwrap().chars().next();
+        let first_char = self.command.as_ref().unwrap().chars().next().unwrap();
         return match first_char {
-            Some(first_char) if first_char == "@".parse().unwrap() => CommandType::ACommand(self.command.clone().unwrap()),
-            Some(first_char) if first_char == "(".parse().unwrap() => CommandType::LCommand(self.command.clone().unwrap()),
-            Some(_) => CommandType::CCommand(self.command.clone().unwrap()),
+            '@' => CommandType::ACommand(self.command.clone().unwrap()),
+            '(' => CommandType::LCommand(self.command.clone().unwrap()),
+            'A' | 'D' | 'M' => CommandType::CCommand(self.command.clone().unwrap()),
             _ => panic!("Can'not detect command type!")
         }
     }
