@@ -1,22 +1,22 @@
-pub enum CommandType{
+pub enum CommandType {
     ACommand(String),
     CCommand(String),
-    LCommand(String)
+    LCommand(String),
 }
 
-pub enum Symbol{
+pub enum Symbol {
     Address(i32),
-    Symbol(String)
+    Symbol(String),
 }
 
-pub fn classification_symbol(symbol: &str) -> Symbol{
+pub fn classification_symbol(symbol: &str) -> Symbol {
     return match symbol.parse::<i32>() {
         Ok(num) => Symbol::Address(num),
-        Err(_) => Symbol::Symbol(symbol.to_string())
-    }
+        Err(_) => Symbol::Symbol(symbol.to_string()),
+    };
 }
 
-pub enum DestType{
+pub enum DestType {
     Null,
     M,
     D,
@@ -27,7 +27,7 @@ pub enum DestType{
     AMD,
 }
 
-pub enum JumpType{
+pub enum JumpType {
     Null,
     JGT,
     JEQ,
@@ -38,7 +38,7 @@ pub enum JumpType{
     JMP,
 }
 
-pub enum CompType{
+pub enum CompType {
     Zero,
     One,
     MinusOne,
@@ -66,5 +66,5 @@ pub enum CompType{
     DMinusM,
     MMinusD,
     DAndM,
-    DOrM
+    DOrM,
 }

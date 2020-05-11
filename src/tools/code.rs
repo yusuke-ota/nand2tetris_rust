@@ -1,6 +1,6 @@
 use crate::tools::*;
 
-pub fn dest(dest_type: DestType) -> [u8;3] {
+pub fn dest(dest_type: DestType) -> [u8; 3] {
     return match dest_type {
         DestType::Null => [0, 0, 0],
         DestType::M => [0, 0, 1],
@@ -9,11 +9,11 @@ pub fn dest(dest_type: DestType) -> [u8;3] {
         DestType::A => [1, 0, 0],
         DestType::AM => [1, 0, 1],
         DestType::AD => [1, 1, 0],
-        DestType::AMD => [1, 1, 1]
-    }
+        DestType::AMD => [1, 1, 1],
+    };
 }
 
-pub fn jump(jump_type: JumpType) -> [u8;3]{
+pub fn jump(jump_type: JumpType) -> [u8; 3] {
     return match jump_type {
         JumpType::Null => [0, 0, 0],
         JumpType::JGT => [0, 0, 1],
@@ -23,10 +23,10 @@ pub fn jump(jump_type: JumpType) -> [u8;3]{
         JumpType::JNE => [1, 0, 1],
         JumpType::JLE => [1, 1, 0],
         JumpType::JMP => [1, 1, 1],
-    }
+    };
 }
 
-pub fn comp(comp_type: CompType) -> [u8;7]{
+pub fn comp(comp_type: CompType) -> [u8; 7] {
     return match comp_type {
         CompType::Zero => [0, 1, 0, 1, 0, 1, 0],
         CompType::One => [0, 1, 1, 1, 1, 1, 1],
@@ -37,8 +37,8 @@ pub fn comp(comp_type: CompType) -> [u8;7]{
         CompType::NotA => [0, 1, 1, 0, 0, 0, 1],
         CompType::MinusD => [0, 0, 0, 1, 1, 1, 1],
         CompType::MinusA => [0, 1, 1, 0, 0, 1, 1],
-        CompType::DPlusOne=> [0, 0, 1, 1, 1, 1, 1] ,
-        CompType::APlusOne=> [0, 1, 1, 0, 1, 1, 1]  ,
+        CompType::DPlusOne => [0, 0, 1, 1, 1, 1, 1],
+        CompType::APlusOne => [0, 1, 1, 0, 1, 1, 1],
         CompType::DMinusOne => [0, 0, 0, 1, 1, 1, 0],
         CompType::AMinusOne => [0, 1, 1, 0, 0, 1, 0],
         CompType::DPlusA => [0, 0, 0, 0, 0, 1, 0],
@@ -56,5 +56,5 @@ pub fn comp(comp_type: CompType) -> [u8;7]{
         CompType::MMinusD => [1, 0, 0, 0, 1, 1, 1],
         CompType::DAndM => [1, 0, 0, 0, 0, 0, 0],
         CompType::DOrM => [1, 0, 1, 0, 1, 0, 1],
-    }
+    };
 }

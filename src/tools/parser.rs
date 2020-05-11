@@ -1,6 +1,6 @@
-use std::fs::File;
-use std::io::{BufReader, BufRead};
 use crate::tools::*;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 
 #[derive(Clone, Debug)]
 pub struct Parser {
@@ -8,36 +8,36 @@ pub struct Parser {
     command: Option<String>,
 }
 
-impl Parser{
-    pub fn new(file: File) -> Self{
+impl Parser {
+    pub fn new(file: File) -> Self {
         let mut buf_reader = BufReader::new(file);
         let mut buf = String::new();
         let mut buffer = Vec::new();
-        while buf_reader.read_line(&mut buf).unwrap_or(0) > 0{
+        while buf_reader.read_line(&mut buf).unwrap_or(0) > 0 {
             let trim_buf = buf.trim_end();
             if !trim_buf.starts_with('/') && trim_buf != "" {
-            buffer.push(trim_buf.to_string());
+                buffer.push(trim_buf.to_string());
             }
             buf.clear();
         }
         // pop以外のメソッドで、配列から順序を崩さずに値を取り出すことができない
         // なので、reverse()して、配列の最後尾(実質頭)から値を取り出す
         buffer.reverse();
-        Self{
+        Self {
             buffer,
-            command: Option::None
+            command: Option::None,
         }
     }
 
-    pub fn has_more_commands(&self) -> bool{
-        match self.buffer.len(){
+    pub fn has_more_commands(&self) -> bool {
+        match self.buffer.len() {
             len if len > 0 => true,
-            _ => false
+            _ => false,
         }
     }
 
-    pub fn advance(&mut self){
-        if !self.has_more_commands(){
+    pub fn advance(&mut self) {
+        if !self.has_more_commands() {
             return;
         }
         // self.buffer.len() > 0なので、必ず値がある
@@ -45,42 +45,41 @@ impl Parser{
         self.command = Some(new_command);
     }
 
-    pub fn command_type(&self) -> CommandType{
+    pub fn command_type(&self) -> CommandType {
         let first_char = self.command.as_ref().unwrap().chars().next().unwrap();
         return match first_char {
             '@' => CommandType::ACommand(self.command.clone().unwrap()),
             '(' => CommandType::LCommand(self.command.clone().unwrap()),
             'A' | 'D' | 'M' | '0' => CommandType::CCommand(self.command.clone().unwrap()),
-            _ => panic!("Can'not detect command type!")
-        }
+            _ => panic!("Can'not detect command type!"),
+        };
     }
 
-    pub fn symbol(&self) -> Result<Symbol, &'static str>{
-        let command_type = self.command_type();
-        return match command_type {
+    pub fn symbol(&self) -> Result<Symbol, &'static str> {
+        return match self.command_type() {
             CommandType::ACommand(command) => {
                 let num = command.trim_start_matches('@');
                 Ok(classification_symbol(num))
-            },
+            }
             CommandType::LCommand(command) => {
                 let symbol = command.trim_start_matches('(').trim_end_matches(')');
                 Ok(classification_symbol(symbol))
-            },
-            _ => Err("This type is not ACommand or LCommand!")
-        }
+            }
+            _ => Err("This type is not ACommand or LCommand!"),
+        };
     }
 
-    pub fn dest(&self) -> Result<DestType, &'static str>{
+    pub fn dest(&self) -> Result<DestType, &'static str> {
         let c_command;
         match self.command_type() {
             CommandType::CCommand(command) => c_command = command,
-            _ => return Err("This type is not CCommand!")
+            _ => return Err("This type is not CCommand!"),
         }
         let separate_place = c_command.find('=');
         let dest_string;
         match separate_place {
             Some(num) => dest_string = c_command[0..num].to_string(),
-            None => return Err("Cannot found =")
+            None => return Err("Cannot found ="),
         }
         let dest_string: &str = &dest_string;
         return match dest_string {
@@ -92,15 +91,15 @@ impl Parser{
             "AM" => Ok(DestType::AM),
             "AD" => Ok(DestType::AD),
             "AMD" => Ok(DestType::AMD),
-            _ => Err("Cannot parse to DestType")
-        }
+            _ => Err("Cannot parse to DestType"),
+        };
     }
 
-    pub fn comp(&self) -> Result<CompType, &'static str>{
+    pub fn comp(&self) -> Result<CompType, &'static str> {
         let c_command;
         match self.command_type() {
             CommandType::CCommand(command) => c_command = command,
-            _ => return Err("This type is not CCommand!")
+            _ => return Err("This type is not CCommand!"),
         }
         let comp_string;
         let separate_place_equal = c_command.find('=');
@@ -112,7 +111,7 @@ impl Parser{
             let num = separate_place_semi_colon.unwrap();
             comp_string = c_command[0..num].to_string();
         } else {
-            return Err("Cannot found = or ;")
+            return Err("Cannot found = or ;");
         };
 
         let comp_string: &str = &comp_string;
@@ -149,17 +148,17 @@ impl Parser{
         };
     }
 
-    pub fn jump(&self) -> Result<JumpType, &'static str>{
+    pub fn jump(&self) -> Result<JumpType, &'static str> {
         let c_command;
         match self.command_type() {
             CommandType::CCommand(command) => c_command = command,
-            _ => return Err("This type is not CCommand!")
+            _ => return Err("This type is not CCommand!"),
         }
         let separate_place = c_command.find(";");
         let jump_string;
         match separate_place {
-            Some(num) => jump_string = c_command[num+1..].to_string(),
-            None => return Err("Cannot found ;")
+            Some(num) => jump_string = c_command[num + 1..].to_string(),
+            None => return Err("Cannot found ;"),
         }
         let jump_string: &str = &jump_string;
         return match jump_string {
@@ -171,7 +170,7 @@ impl Parser{
             "JNE" => Ok(JumpType::JNE),
             "JLE" => Ok(JumpType::JLE),
             "JMP" => Ok(JumpType::JMP),
-            _ => Err("Jump parse error!")
-        }
+            _ => Err("Jump parse error!"),
+        };
     }
 }
