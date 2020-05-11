@@ -22,6 +22,8 @@ impl Parser {
         }
         // pop以外のメソッドで、配列から順序を崩さずに値を取り出すことができない
         // なので、reverse()して、配列の最後尾(実質頭)から値を取り出す
+        // In Rust, we can't use shift command to collection type like Ruby language.
+        // So, use reverse() and pop() to pick the first element of Vec<T>.
         buffer.reverse();
         Self {
             buffer,
@@ -41,6 +43,7 @@ impl Parser {
             return;
         }
         // self.buffer.len() > 0なので、必ず値がある
+        // This "unwrap()" is always success because "self.buffer.len() > 0".
         let new_command = self.buffer.pop().unwrap();
         self.command = Some(new_command);
     }
@@ -57,10 +60,12 @@ impl Parser {
 
     pub fn symbol(&self) -> Result<Symbol, &'static str> {
         return match self.command_type() {
+            // A command: "@xxx" (x is number)
             CommandType::ACommand(command) => {
                 let num = command.trim_start_matches('@');
                 Ok(classification_symbol(num))
             }
+            // L command: "(xxx)" (x is string)
             CommandType::LCommand(command) => {
                 let symbol = command.trim_start_matches('(').trim_end_matches(')');
                 Ok(classification_symbol(symbol))
@@ -102,12 +107,15 @@ impl Parser {
             _ => return Err("This type is not CCommand!"),
         }
         let comp_string;
+        // c command: "x=xxx" or "x;xxx" ()
         let separate_place_equal = c_command.find('=');
         let separate_place_semi_colon = c_command.find(';');
         if separate_place_equal.is_some() {
+            // if c command is "x=xxx", we need "xxx".
             let num = separate_place_equal.unwrap();
             comp_string = c_command[num + 1..].to_string();
         } else if separate_place_semi_colon.is_some() {
+            // if c command is "x;xxx", we need "x".
             let num = separate_place_semi_colon.unwrap();
             comp_string = c_command[0..num].to_string();
         } else {

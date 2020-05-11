@@ -6,13 +6,16 @@ use std::io::Write;
 fn main() {
     let args = env::args().collect::<Vec<String>>();
     // &args[0]はこのバイナリの名前が入る
+    // &args[0] is this application name.
     let file = File::open(&args[1]).unwrap_or_else(|_| panic!("not found: {:?}", args));
     let mut parser = Parser::new(file);
 
+    // make output string
     let mut write_string = String::new();
     while parser.has_more_commands() {
         parser.advance();
         let command_type = parser.command_type();
+        // Pattern match and create machine code.
         match command_type {
             CommandType::ACommand(_) | CommandType::LCommand(_) => match parser.symbol().unwrap() {
                 Symbol::Address(num) => write_string.push_str(&format!("{:016b}", num)),
