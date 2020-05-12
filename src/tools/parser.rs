@@ -14,9 +14,9 @@ impl Parser {
         let mut buf = String::new();
         let mut buffer = Vec::new();
         while buf_reader.read_line(&mut buf).unwrap_or(0) > 0 {
-            let trim_buf = buf.trim_end();
-            if !trim_buf.starts_with('/') && trim_buf != "" {
-                buffer.push(trim_buf.to_string());
+            let trimmed_buf = buf.trim_end().trim_start();
+            if !trimmed_buf.starts_with('/') && trimmed_buf != "" {
+                buffer.push(trimmed_buf.to_string());
             }
             buf.clear();
         }
@@ -109,20 +109,20 @@ impl Parser {
 
         let space_and_comment: &[_] = &['/', ' '];
         let white_space_or_comment = c_command.find(space_and_comment);
-        let end = white_space_or_comment.unwrap_or( c_command.len());
+        let end = white_space_or_comment.unwrap_or(c_command.len());
 
         let comp_string;
         // c command: "x=xxx" or "x;xxx" ()
         let separate_place_equal = c_command.find('=');
         let separate_place_semi_colon = c_command.find(';');
 
-        if let Some(separate) = separate_place_equal{
+        if let Some(separate) = separate_place_equal {
             comp_string = c_command[separate + 1..end].to_string();
-        } else if let Some(separate) = separate_place_semi_colon{
+        } else if let Some(separate) = separate_place_semi_colon {
             comp_string = c_command[0..separate].to_string();
         } else {
             return Err("Cannot found = or ;");
-        };
+        }
 
         let comp_string: &str = &comp_string;
         return match comp_string {
@@ -166,7 +166,7 @@ impl Parser {
         }
         let space_and_comment: &[_] = &['/', ' '];
         let white_space_or_comment = c_command.find(space_and_comment);
-        let end = white_space_or_comment.unwrap_or( c_command.len());
+        let end = white_space_or_comment.unwrap_or(c_command.len());
 
         let separate_place = c_command.find(";");
         let jump_string;

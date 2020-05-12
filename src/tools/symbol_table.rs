@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+#[derive(Debug)]
 pub struct SymbolTable {
     dictionary: HashMap<String, i32>,
 }
@@ -32,9 +33,9 @@ impl SymbolTable {
             ("SCREEN", 16384),
             ("KBD", 24576),
         ];
-        DEFINED_SYMBOL
-            .iter()
-            .map(|&(symbol, address)| dictionary.insert(symbol.to_string(), address));
+        for &(symbol, address) in DEFINED_SYMBOL.iter() {
+            dictionary.insert(symbol.to_string(), address);
+        }
 
         Self { dictionary }
     }

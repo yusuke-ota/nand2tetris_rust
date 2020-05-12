@@ -17,40 +17,39 @@ fn main() {
     // シンボルテーブルに登録する
     // Register symbol table
     {
+        // l command
+        let mut line_counter = -1;
         let mut parser_for_symbol = parser.clone();
-        let mut symbol_counter = 16;
-        let mut line_counter = 0;
         while parser_for_symbol.has_more_commands() {
-            parser.advance();
+            parser_for_symbol.advance();
             line_counter += 1;
-            let command_type = parser.command_type();
-            // Pattern match and create machine code.
-            match command_type {
-                // a command: @xxx (xxx: i32), @xxx (xxx: &str)
-                // When a command is @xxx (xxx: &str) type, add to symbol_table.
-                CommandType::ACommand(_) => {
-                    if let Symbol::Symbol(symbol) = parser.symbol() {
-                        if symbol_table.contains(&symbol) {
-                            continue;
-                        };
+            let command_type = parser_for_symbol.command_type();
+            if let CommandType::LCommand(_) = command_type {
+                if let Ok(Symbol::Symbol(symbol)) = parser_for_symbol.symbol() {
+                    if symbol_table.contains(&symbol) {
+                        continue;
+                    };
 
-                        symbol_table.add_entry(symbol, symbol_counter);
-                        symbol_counter += 1;
-                    }
+                    symbol_table.add_entry(symbol, line_counter);
+                    line_counter -= 1;
                 }
-                // l command: (xxx) (xxx: &str)
-                // "line_counter" is counter counts .asm file line without L Command, empty line and comment line.
-                CommandType::LCommand(_) => {
-                    if let Symbol::Symbol(symbol) = parser.symbol() {
-                        if symbol_table.contains(&symbol) {
-                            continue;
-                        };
+            }
+        }
 
-                        symbol_table.add_entry(symbol, line_counter);
-                        line_counter -= 1;
-                    }
+        // a command
+        let mut symbol_counter = 16;
+        let mut parser_for_symbol = parser.clone();
+        while parser_for_symbol.has_more_commands() {
+            parser_for_symbol.advance();
+            if let CommandType::ACommand(_) = parser_for_symbol.command_type() {
+                if let Ok(Symbol::Symbol(symbol)) = parser_for_symbol.symbol() {
+                    if symbol_table.contains(&symbol) {
+                        continue;
+                    };
+
+                    symbol_table.add_entry(symbol, symbol_counter);
+                    symbol_counter += 1;
                 }
-                _ => continue,
             }
         }
     }
@@ -65,7 +64,7 @@ fn main() {
             CommandType::CCommand(_) => {
                 write_string.push_str(&make_c_command_machine_code(&parser))
             }
-            CommandType::ACommand(_) | CommandType::LCommand(_) => match parser.symbol().unwrap() {
+            CommandType::ACommand(_) => match parser.symbol().unwrap() {
                 Symbol::Address(num) => write_string.push_str(&format!("{:016b}", num)),
                 Symbol::Symbol(string) => {
                     let num = symbol_table
@@ -74,9 +73,11 @@ fn main() {
                     write_string.push_str(&format!("{:016b}", num))
                 }
             },
+            _ => continue,
         }
+
+        write_string.push_str("\n");
     }
-    write_string.push_str("\n");
 
     // 拡張子(.asm)を削除
     // Remove extension ".asm".
