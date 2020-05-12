@@ -10,6 +10,48 @@ fn main() {
     let file = File::open(&args[1]).unwrap_or_else(|_| panic!("not found: {:?}", args));
     let mut parser = Parser::new(file);
 
+    let mut symbol_table = SymbolTable::new();
+    // シンボルテーブルに登録する
+    // Register symbol table
+    {
+        let mut parser_for_symbol = parser.clone();
+        let mut symbol_counter = 16;
+        let mut line_counter = 0;
+        while parser_for_symbol.has_more_commands() {
+            parser.advance();
+            line_counter += 1;
+            let command_type = parser.command_type();
+            // Pattern match and create machine code.
+            match command_type {
+                // a command: @xxx (xxx: i32), @xxx (xxx: &str)
+                // When a command is @xxx (xxx: &str) type, add to symbol_table.
+                CommandType::ACommand(_) => {
+                    if let Symbol::Symbol(symbol) = parser.symbol() {
+                        if symbol_table.contains(&symbol) {
+                            continue;
+                        };
+
+                        symbol_table.add_entry(symbol, symbol_counter);
+                        symbol_counter += 1;
+                    }
+                }
+                // l command: (xxx) (xxx: &str)
+                // "line_counter" is counter counts .asm file line without L Command, empty line and comment line.
+                CommandType::LCommand(_) => {
+                    if let Symbol::Symbol(symbol) = parser.symbol() {
+                        if symbol_table.contains(&symbol) {
+                            continue;
+                        };
+
+                        symbol_table.add_entry(symbol, line_counter);
+                        line_counter -= 1;
+                    }
+                }
+                _ => continue,
+            }
+        }
+    }
+
     // make output string
     let mut write_string = String::new();
     while parser.has_more_commands() {
@@ -22,11 +64,16 @@ fn main() {
             }
             CommandType::ACommand(_) | CommandType::LCommand(_) => match parser.symbol().unwrap() {
                 Symbol::Address(num) => write_string.push_str(&format!("{:016b}", num)),
-                Symbol::Symbol(string) => write_string.push_str(&string),
+                Symbol::Symbol(string) => {
+                    let num = symbol_table
+                        .get_address(&string)
+                        .unwrap_or_else(|err| panic!(err));
+                    write_string.push_str(&format!("{:016b}", num))
+                }
             },
         }
-        write_string.push_str("\n");
     }
+    write_string.push_str("\n");
 
     // 拡張子(.asm)を削除
     // Remove extension ".asm".
