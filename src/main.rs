@@ -5,6 +5,9 @@ use std::io::Write;
 
 fn main() {
     let args = env::args().collect::<Vec<String>>();
+    if args.len() <= 1 {
+        panic!("Please input file path")
+    }
     // &args[0]はこのバイナリの名前が入る
     // &args[0] is this application name.
     let file = File::open(&args[1]).unwrap_or_else(|_| panic!("not found: {:?}", args));
