@@ -106,18 +106,20 @@ impl Parser {
             CommandType::CCommand(command) => c_command = command,
             _ => return Err("This type is not CCommand!"),
         }
+
+        let space_and_comment: &[_] = &['/', ' '];
+        let white_space_or_comment = c_command.find(space_and_comment);
+        let end = white_space_or_comment.unwrap_or( c_command.len());
+
         let comp_string;
         // c command: "x=xxx" or "x;xxx" ()
         let separate_place_equal = c_command.find('=');
         let separate_place_semi_colon = c_command.find(';');
-        if separate_place_equal.is_some() {
-            // if c command is "x=xxx", we need "xxx".
-            let num = separate_place_equal.unwrap();
-            comp_string = c_command[num + 1..].to_string();
-        } else if separate_place_semi_colon.is_some() {
-            // if c command is "x;xxx", we need "x".
-            let num = separate_place_semi_colon.unwrap();
-            comp_string = c_command[0..num].to_string();
+
+        if let Some(separate) = separate_place_equal{
+            comp_string = c_command[separate + 1..end].to_string();
+        } else if let Some(separate) = separate_place_semi_colon{
+            comp_string = c_command[0..separate].to_string();
         } else {
             return Err("Cannot found = or ;");
         };
@@ -162,10 +164,14 @@ impl Parser {
             CommandType::CCommand(command) => c_command = command,
             _ => return Err("This type is not CCommand!"),
         }
+        let space_and_comment: &[_] = &['/', ' '];
+        let white_space_or_comment = c_command.find(space_and_comment);
+        let end = white_space_or_comment.unwrap_or( c_command.len());
+
         let separate_place = c_command.find(";");
         let jump_string;
         match separate_place {
-            Some(num) => jump_string = c_command[num + 1..].to_string(),
+            Some(num) => jump_string = c_command[num + 1..end].to_string(),
             None => return Err("Cannot found ;"),
         }
         let jump_string: &str = &jump_string;
