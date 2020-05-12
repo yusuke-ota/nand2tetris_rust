@@ -15,44 +15,10 @@ fn main() {
 
     let mut symbol_table = SymbolTable::new();
     // シンボルテーブルに登録する
-    // Register symbol table
-    {
-        // l command
-        let mut line_counter = -1;
-        let mut parser_for_symbol = parser.clone();
-        while parser_for_symbol.has_more_commands() {
-            parser_for_symbol.advance();
-            line_counter += 1;
-            let command_type = parser_for_symbol.command_type();
-            if let CommandType::LCommand(_) = command_type {
-                if let Ok(Symbol::Symbol(symbol)) = parser_for_symbol.symbol() {
-                    if symbol_table.contains(&symbol) {
-                        continue;
-                    };
-
-                    symbol_table.add_entry(symbol, line_counter);
-                    line_counter -= 1;
-                }
-            }
-        }
-
-        // a command
-        let mut symbol_counter = 16;
-        let mut parser_for_symbol = parser.clone();
-        while parser_for_symbol.has_more_commands() {
-            parser_for_symbol.advance();
-            if let CommandType::ACommand(_) = parser_for_symbol.command_type() {
-                if let Ok(Symbol::Symbol(symbol)) = parser_for_symbol.symbol() {
-                    if symbol_table.contains(&symbol) {
-                        continue;
-                    };
-
-                    symbol_table.add_entry(symbol, symbol_counter);
-                    symbol_counter += 1;
-                }
-            }
-        }
-    }
+    // Register l command to symbol table
+    register_l_command(parser.clone(), &mut symbol_table);
+    // Register a command to symbol table
+    register_a_command(parser.clone(), &mut symbol_table);
 
     // make output string
     let mut write_string = String::new();
@@ -109,4 +75,40 @@ fn make_c_command_machine_code(parser: &Parser) -> String {
         .chain(dest.chars())
         .chain(jump.chars())
         .collect::<String>()
+}
+
+fn register_l_command(mut parser: Parser, symbol_table: &mut SymbolTable) {
+    let mut line_counter = -1;
+    while parser.has_more_commands() {
+        parser.advance();
+        line_counter += 1;
+        let command_type = parser.command_type();
+        if let CommandType::LCommand(_) = command_type {
+            if let Ok(Symbol::Symbol(symbol)) = parser.symbol() {
+                if symbol_table.contains(&symbol) {
+                    continue;
+                };
+
+                symbol_table.add_entry(symbol, line_counter);
+                line_counter -= 1;
+            }
+        }
+    }
+}
+
+fn register_a_command(mut parser: Parser, symbol_table: &mut SymbolTable) {
+    let mut symbol_counter = 16;
+    while parser.has_more_commands() {
+        parser.advance();
+        if let CommandType::ACommand(_) = parser.command_type() {
+            if let Ok(Symbol::Symbol(symbol)) = parser.symbol() {
+                if symbol_table.contains(&symbol) {
+                    continue;
+                };
+
+                symbol_table.add_entry(symbol, symbol_counter);
+                symbol_counter += 1;
+            }
+        }
+    }
 }
