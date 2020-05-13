@@ -56,25 +56,22 @@ fn main() {
 }
 
 fn make_c_command_machine_code(parser: &Parser) -> String {
-    let header = "111";
-    let comp = comp(parser.comp().unwrap_or(CompType::Zero))
-        .iter()
-        .map(|&iter| iter.to_string())
-        .collect::<String>();
-    let dest = dest(parser.dest().unwrap_or(DestType::Null))
-        .iter()
-        .map(|&iter| iter.to_string())
-        .collect::<String>();
-    let jump = jump(parser.jump().unwrap_or(JumpType::Null))
-        .iter()
-        .map(|&iter| iter.to_string())
-        .collect::<String>();
-    header
-        .chars()
-        .chain(comp.chars())
-        .chain(dest.chars())
-        .chain(jump.chars())
-        .collect::<String>()
+    let mut machine_code = String::with_capacity(16);
+    // push header
+    machine_code.push_str("111");
+    // push comp
+    for &binary in comp(parser.comp().unwrap_or(CompType::Zero)).iter(){
+        machine_code.push_str(&binary.to_string());
+    }
+    // push dest
+    for &binary in dest(parser.dest().unwrap_or(DestType::Null)).iter(){
+        machine_code.push_str(&binary.to_string());
+    }
+    // push jump
+    for &binary in jump(parser.jump().unwrap_or(JumpType::Null)).iter(){
+        machine_code.push_str(&binary.to_string());
+    }
+    machine_code
 }
 
 fn register_l_command(mut parser: Parser, symbol_table: &mut SymbolTable) {

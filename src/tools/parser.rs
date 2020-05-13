@@ -40,7 +40,7 @@ impl Parser {
 
     pub fn advance(&mut self) {
         if !self.has_more_commands() {
-            return;
+            panic!();
         }
         // self.buffer.len() > 0なので、必ず値がある
         // This "unwrap()" is always success because "self.buffer.len() > 0".
