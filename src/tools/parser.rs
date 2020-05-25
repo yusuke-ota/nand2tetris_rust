@@ -48,13 +48,13 @@ impl Parser {
         self.command = Some(new_command);
     }
 
-    pub fn command_type(&self) -> CommandType {
+    pub fn command_type(&self) -> Result<CommandType, &'static str> {
         let first_char = self.command.as_ref().unwrap().chars().next().unwrap();
         return match first_char {
-            '@' => CommandType::ACommand(self.command.clone().unwrap()),
-            '(' => CommandType::LCommand(self.command.clone().unwrap()),
-            'A' | 'D' | 'M' | '0' => CommandType::CCommand(self.command.clone().unwrap()),
-            _ => panic!("Can'not detect command type!"),
+            '@' => Ok(CommandType::ACommand(self.command.clone().unwrap())),
+            '(' => Ok(CommandType::LCommand(self.command.clone().unwrap())),
+            'A' | 'D' | 'M' | '0' => Ok(CommandType::CCommand(self.command.clone().unwrap())),
+            _ => Err("Can'not detect command type!"),
         };
     }
 
