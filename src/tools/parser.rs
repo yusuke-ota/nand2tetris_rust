@@ -1,6 +1,6 @@
-use crate::tools::*;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use crate::enums::{JumpType, DestType, CompType, CommandType, classification_symbol, Symbol};
 
 #[derive(Clone, Debug)]
 pub struct Parser {
@@ -61,12 +61,12 @@ impl Parser {
     pub fn symbol(&self) -> Result<Symbol, &'static str> {
         return match self.command_type() {
             // A command: "@xxx" (x is number)
-            CommandType::ACommand(command) => {
+            Ok(CommandType::ACommand(command)) => {
                 let num = command.trim_start_matches('@');
                 Ok(classification_symbol(num))
             }
             // L command: "(xxx)" (x is string)
-            CommandType::LCommand(command) => {
+            Ok(CommandType::LCommand(command)) => {
                 let symbol = command.trim_start_matches('(').trim_end_matches(')');
                 Ok(classification_symbol(symbol))
             }
@@ -77,7 +77,7 @@ impl Parser {
     pub fn dest(&self) -> Result<DestType, &'static str> {
         let c_command;
         match self.command_type() {
-            CommandType::CCommand(command) => c_command = command,
+            Ok(CommandType::CCommand(command)) => c_command = command,
             _ => return Err("This type is not CCommand!"),
         }
         let separate_place = c_command.find('=');
@@ -103,7 +103,7 @@ impl Parser {
     pub fn comp(&self) -> Result<CompType, &'static str> {
         let c_command;
         match self.command_type() {
-            CommandType::CCommand(command) => c_command = command,
+            Ok(CommandType::CCommand(command)) => c_command = command,
             _ => return Err("This type is not CCommand!"),
         }
 
@@ -161,7 +161,7 @@ impl Parser {
     pub fn jump(&self) -> Result<JumpType, &'static str> {
         let c_command;
         match self.command_type() {
-            CommandType::CCommand(command) => c_command = command,
+            Ok(CommandType::CCommand(command)) => c_command = command,
             _ => return Err("This type is not CCommand!"),
         }
         let space_and_comment: &[_] = &['/', ' '];

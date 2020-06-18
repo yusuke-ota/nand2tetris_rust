@@ -1,4 +1,4 @@
-use crate::tools::*;
+use crate::enums::{DestType, JumpType, CompType};
 
 pub fn dest(dest_type: DestType) -> [u8; 3] {
     return match dest_type {
