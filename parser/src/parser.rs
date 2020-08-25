@@ -6,7 +6,7 @@ use crate::command_type::CommandType;
 
 impl Parser{
     pub fn new(file: File) -> Self {
-        let mut buf_reader = BufReader::new(file);
+        let buf_reader = BufReader::new(file);
         let mut stream = separate_line(buf_reader);
         // To get stream head with `.pop()`, stream should `.reverse()`.
         // `.pop()` get "last" element of argument.
@@ -36,12 +36,14 @@ impl IParser for Parser{
 
     /// Panic when command == None, command == "x", and "non_command _ _"
     fn command_type(&self) -> CommandType {
-        let command = self.command.unwrap().split_whitespace().next().unwrap();
+        let command = self.command.clone().unwrap().clone();
+        let command = command.split_whitespace().next().expect("command_type(): String == \"\"");
         CommandType::try_from(command).unwrap()
     }
 
     fn arg1(&self) -> String {
-        let command = self.command.unwrap().split_whitespace().flat_map().collect::<Vec<&str>>();
+        let command = self.command.clone().unwrap().clone();
+        let command = command.split_whitespace().collect::<Vec<&str>>();
         return match command[..] {
             ["add"] => "add".to_string(),
             ["sub"] => "sub".to_string(),
@@ -58,7 +60,8 @@ impl IParser for Parser{
     }
 
     fn arg2(&self) -> i32 {
-        let command = self.command.unwrap().split_whitespace().flat_map().collect::<Vec<&str>>();
+        let command = self.command.clone().unwrap().clone();
+        let command = command.split_whitespace().collect::<Vec<&str>>();
         command[2].parse::<i32>().expect("arg2(): parse error.")
     }
 }

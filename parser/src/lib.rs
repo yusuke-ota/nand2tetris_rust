@@ -11,7 +11,7 @@ pub struct Parser{
 
 pub trait IParser{
     fn has_more_commands(&self) -> bool;
-    fn advance(&self);
+    fn advance(&mut self);
     fn command_type(&self) -> CommandType;
     /// This function shouldn't call when Parser::command is CReturn.
     fn arg1(&self) -> String;

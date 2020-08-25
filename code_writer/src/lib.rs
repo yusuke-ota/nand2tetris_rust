@@ -12,10 +12,10 @@ struct CodeWriter{
 
 trait ICodeWriter{
     fn new(path: &str) -> Self;
-    fn set_file_name(&self, file_name: &str);
-    fn write_arithmetic(&self, command: &str);
-    fn write_push_pop(&self, command: CommandType);
-    fn close(&self);
+    fn set_file_name(&mut self, file_name: &str);
+    fn write_arithmetic(&mut self, command: &str);
+    fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32);
+    fn close(&mut self);
 }
 
 #[cfg(test)]
