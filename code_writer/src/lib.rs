@@ -1,12 +1,21 @@
-use parser::command_type::CommandType;
-struct CodeWriter{
+mod arithmetic_type;
+mod command_type;
+mod code_writer;
 
+use std::fs::File;
+use parser::Parser;
+use crate::command_type::CommandType;
+
+struct CodeWriter{
+    export_dir: File,
+    write_buffer: Vec<u8>,
+    parsers: Vec<Parser>
 }
 
 trait ICodeWriter{
-    fn new(stream: todo!()) -> Self;
-    fn set_file_name(&self, file_name: String);
-    fn write_arithmetic(&self, command: CommandType);
+    fn new(path: &str) -> Self;
+    fn set_file_name(&self, file_name: &str);
+    fn write_arithmetic(&self, command: &str);
     fn write_push_pop(&self, command: CommandType);
     fn close(&self);
 }
