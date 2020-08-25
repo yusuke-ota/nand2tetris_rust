@@ -30,3 +30,20 @@ impl TryFrom<&str> for CommandType{
         }
     }
 }
+
+impl From<CommandType> for &'static str{
+    fn from(command_type: CommandType) -> Self {
+        match command_type {
+            // todo: 対応するアセンブリを記載
+            CommandType::CPush => "",
+            CommandType::CPop => "",
+            CommandType::CLabel => "",
+            CommandType::CGoto => "",
+            CommandType::CIf => "",
+            CommandType::CFunction => "",
+            CommandType::CReturn => "",
+            CommandType::CCall => "",
+            CommandType::CArithmetic => unreachable!(),
+        }
+    }
+}

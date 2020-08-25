@@ -1,6 +1,8 @@
-mod parser;
-use command_type::CommandType;
-use std::fs::File;
+pub mod command_type;
+pub mod arithmetic_type;
+pub mod parser;
+
+use crate::command_type::CommandType;
 
 pub struct Parser{
     stream: Vec<String>,

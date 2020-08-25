@@ -1,6 +1,6 @@
 use std::convert::TryFrom;
 
-pub(crate) enum ArithmeticType{
+pub enum ArithmeticType{
     Add,
     Sub,
     Neg,
@@ -27,6 +27,23 @@ impl TryFrom<&str> for ArithmeticType{
             "or" => Ok(Self::Or),
             "not" => Ok(Self::Not),
             _ => Err("Convert error")
+        }
+    }
+}
+
+impl From<ArithmeticType> for &'static str{
+    fn from(arithmetic_type: ArithmeticType) -> Self {
+        return match arithmetic_type {
+            // todo: 変換先のアセンブリを記載
+            ArithmeticType::Add => "D=D+A\n@0\nM=D",
+            ArithmeticType::Sub => "D=D-A\n@0\nM=D",
+            ArithmeticType::Neg => "",
+            ArithmeticType::Eq => "",
+            ArithmeticType::Gt => "",
+            ArithmeticType::Lt => "",
+            ArithmeticType::And => "",
+            ArithmeticType::Or => "",
+            ArithmeticType::Not => "",
         }
     }
 }

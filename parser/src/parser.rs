@@ -1,8 +1,8 @@
 use crate::{IParser, Parser};
-use crate::command_type::CommandType;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::convert::TryFrom;
+use crate::command_type::CommandType;
 
 impl Parser{
     pub fn new(file: File) -> Self {

@@ -1,10 +1,8 @@
-mod arithmetic_type;
-mod command_type;
 mod code_writer;
 
 use std::fs::File;
 use parser::Parser;
-use crate::command_type::CommandType;
+use parser::command_type::CommandType;
 
 struct CodeWriter{
     export_dir: File,
