@@ -4,8 +4,8 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::convert::TryFrom;
 
-impl IParser for Parser{
-    fn new(file: File) -> Self {
+impl Parser{
+    pub fn new(file: File) -> Self {
         let mut buf_reader = BufReader::new(file);
         let mut stream = separate_line(buf_reader);
         // To get stream head with `.pop()`, stream should `.reverse()`.
@@ -17,7 +17,9 @@ impl IParser for Parser{
             command: None,
         }
     }
+}
 
+impl IParser for Parser{
     fn has_more_commands(&self) -> bool {
         self.stream.len() > 0
     }

@@ -7,9 +7,7 @@ pub struct Parser{
     command: Option<String>,
 }
 
-trait IParser{
-    /// Create Parser from Files.
-    fn new(file: File) -> Self;
+pub trait IParser{
     fn has_more_commands(&self) -> bool;
     fn advance(&self);
     fn command_type(&self) -> CommandType;
