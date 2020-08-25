@@ -1,5 +1,4 @@
 mod parser;
-pub mod command_type;
 use command_type::CommandType;
 use std::fs::File;
 
