@@ -23,40 +23,13 @@ impl ICodeWriter for CodeWriter{
     }
 
     fn write_arithmetic(&mut self, command: &str) {
-        let mut buffer = Vec::<u8>::with_capacity(command.len() + 2);
         let arithmetic_type = ArithmeticType::try_from(command).unwrap_or_else(|err| panic!(err));
-
-        let assemble_code = <&'static str>::from(arithmetic_type).to_string();
-        let mut char_byte = [0_u8;1];
-
-        for char in assemble_code.chars(){
-            // char is single byte string.
-            char.encode_utf8(&mut char_byte);
-            buffer.push(char_byte[0]);
-            char_byte = [0];
-        }
-
-        '\n'.encode_utf8(&mut char_byte);
-        buffer.push(char_byte[0]);
-
-        self.write_buffer.append(&mut buffer);
+        self.write_buffer.append(&mut arithmetic_type.into());
     }
 
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32) {
-        let assemble_code = format!("{} {} {}", <&'static str>::from(command), segment, index);
-        let mut buffer = Vec::<u8>::with_capacity(assemble_code.len() + 2);
-        let mut char_byte = [0_u8;1];
-
-        for char in assemble_code.chars(){
-            // char is single byte string.
-            char.encode_utf8(&mut char_byte);
-            buffer.push(char_byte[0]);
-            char_byte = [0];
-        }
-
-        '\n'.encode_utf8(&mut char_byte);
-        buffer.push(char_byte[0]);
-
+        let assemble_code = format!("{} {} {}\n", <&'static str>::from(command), segment, index);
+        let mut buffer = assemble_code.as_bytes().iter().copied().collect::<Vec<u8>>();
         self.write_buffer.append(&mut buffer);
     }
 

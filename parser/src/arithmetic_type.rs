@@ -31,23 +31,23 @@ impl TryFrom<&str> for ArithmeticType{
     }
 }
 
-impl From<ArithmeticType> for &'static str{
+impl From<ArithmeticType> for Vec<u8>{
     fn from(arithmetic_type: ArithmeticType) -> Self {
         return match arithmetic_type {
-            ArithmeticType::Add => ADD,
-            ArithmeticType::Sub => SUB,
-            ArithmeticType::Neg => NEG,
+            ArithmeticType::Add => ADD.to_vec(),
+            ArithmeticType::Sub => SUB.to_vec(),
+            ArithmeticType::Neg => NEG.to_vec(),
             ArithmeticType::Eq => eq(),
             ArithmeticType::Gt => gt(),
             ArithmeticType::Lt => lt(),
-            ArithmeticType::And => AND,
-            ArithmeticType::Or => OR,
-            ArithmeticType::Not => NOT,
+            ArithmeticType::And => AND.to_vec(),
+            ArithmeticType::Or => OR.to_vec(),
+            ArithmeticType::Not => NOT.to_vec(),
         }
     }
 }
 
-const ADD: &'static str =
+const ADD: &'static [u8; 42] =
     // スタックポインタの一番上のアドレス＋1が入っているアドレスを参照、Aに代入(Rust的に言うとA=&SP, M=SP)
     // M=M-1(=一番上のアドレス)して、そのアドレスをAに代入
     // DレジスタにM(=A(一番上のアドレス)の中身)を代入
@@ -55,7 +55,7 @@ const ADD: &'static str =
     // DレジスタにM(=A(一番上のアドレス)の中身)を代入
     // スタックの一番上に現在のDレジスタの値-Aレジスタの値を代入する
     // スタックを一つ進める
-    "@SP\n\
+    b"@SP\n\
     AM=M-1\n\
     D=M\n\
     @SP\n\
@@ -63,10 +63,10 @@ const ADD: &'static str =
     M=D+M\n\
     @SP\n\
     M=M+1\n";
-const SUB: &'static str =
+const SUB: &'static [u8; 42] =
     // A-Bがあったとき、M=D-MだとB-Aになってしまう
     // 順番注意
-    "@SP\n\
+    b"@SP\n\
     AM=M-1\n\
     D=A\n\
     @SP\n\
@@ -74,14 +74,14 @@ const SUB: &'static str =
     M=M-D\n\
     @SP\n\
     M=M+1\n";
-const NEG: &'static str =
-    "@SP\n\
+const NEG: &'static [u8; 26] =
+    b"@SP\n\
     AM=M-1\n\
     M=-M\n\
     @SP\n\
     M=M+1\n";
-const AND: &'static str =
-    "@SP\n\
+const AND: &'static [u8; 42] =
+    b"@SP\n\
     AM=M-1\n\
     D=A\n\
     @SP\n\
@@ -89,8 +89,8 @@ const AND: &'static str =
     M=D&M\n\
     @SP\n\
     M=M+1\n";
-const OR: &'static str =
-    "@SP\n\
+const OR: &'static [u8; 42] =
+    b"@SP\n\
     AM=M-1\n\
     D=A\n\
     @SP\n\
@@ -98,63 +98,81 @@ const OR: &'static str =
     M=D|M\n\
     @SP\n\
     M=M+1\n";
-const NOT: &'static str =
-    "@SP\n\
+const NOT: &'static [u8; 26] =
+    b"@SP\n\
     AM=M-1\n\
     M=!M\n\
     @SP\n\
     M=M+1\n";
-// TODO:Labelを取得する
-fn eq() -> &'static str{
-    "@SP\n\
-    AM=M-1\n\
-    D=A\n\
-    @SP\n\
-    AM=M-1\n\
-    D=M-D\n\
-    @labelA\n\
-    D;JEQ\n\
-    M=0\n\
-    @labelB\n\
-    (labelA)\n\
-    M=-1\n\
-    (labelB)\n\
-    @SP\n\
-    M=M+1\n"
+// TODO:Label番号を取得する
+fn eq() -> Vec<u8>{
+    let mut assemble_code = format!(
+        "@SP\n\
+        AM=M-1\n\
+        D=A\n\
+        @SP\n\
+        AM=M-1\n\
+        D=M-D\n\
+        @label{0}\n\
+        D;JEQ\n\
+        M=0\n\
+        @label{1}\n\
+        (label{0})\n\
+        M=-1\n\
+        (label{1})\n\
+        @SP\n\
+        M=M+1\n", 0, 1); // todo: 引数に変更
+    // Assemble_code is utf-8.
+    // `.as_mut_vec()` is safe when utf-8.
+    unsafe {
+        assemble_code.as_mut_vec().clone()
+    }
 }
-// TODO:Labelを取得する
-fn gt() -> &'static str{
-    "@SP\n\
-    AM=M-1\n\
-    D=A\n\
-    @SP\n\
-    AM=M-1\n\
-    D=M-D\n\
-    @labelA\n\
-    D;JGT\n\
-    M=0\n\
-    @labelB\n\
-    (labelA)\n\
-    M=-1\n\
-    (labelB)\n\
-    @SP\n\
-    M=M+1\n"
+// TODO:Label番号を取得する
+fn gt() -> Vec<u8>{
+    let mut assemble_code = format!(
+        "@SP\n\
+        AM=M-1\n\
+        D=A\n\
+        @SP\n\
+        AM=M-1\n\
+        D=M-D\n\
+        @label{0}\n\
+        D;JGT\n\
+        M=0\n\
+        @label{1}\n\
+        (label{0})\n\
+        M=-1\n\
+        (label{1})\n\
+        @SP\n\
+        M=M+1\n", 0, 1); // todo: 引数に変更
+    // Assemble_code is utf-8.
+    // `.as_mut_vec()` is safe when utf-8.
+    unsafe {
+        assemble_code.as_mut_vec().clone()
+    }
 }
-// TODO:Labelを取得する
-fn lt() -> &'static str{
-    "@SP\n\
-    AM=M-1\n\
-    D=A\n\
-    @SP\n\
-    AM=M-1\n\
-    D=M-D\n\
-    @labelA\n\
-    D;JLT\n\
-    M=0\n\
-    @labelB\n\
-    (labelA)\n\
-    M=-1\n\
-    (labelB)\n\
-    @SP\n\
-    M=M+1\n"
+// TODO:Label番号を取得する
+fn lt() -> Vec<u8>{
+    let mut assemble_code = format!(
+        "@SP\n\
+        AM=M-1\n\
+        D=A\n\
+        @SP\n\
+        AM=M-1\n\
+        D=M-D\n\
+        @label{0}\n\
+        D;JLT\n\
+        M=0\n\
+        @label{1}\n\
+        (label{0})\n\
+        M=-1\n\
+        (label{1})\n\
+        @SP\n\
+        M=M+1\n", 0, 1); // todo: 引数に変更
+    // Assemble_code is utf-8.
+    // `.as_mut_vec()` is safe when utf-8.
+    unsafe {
+        assemble_code.as_mut_vec().clone()
+    }
 }
