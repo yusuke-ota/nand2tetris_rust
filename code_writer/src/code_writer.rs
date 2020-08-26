@@ -1,16 +1,16 @@
-use crate::{ICodeWriter, CodeWriter};
+use crate::{CodeWriter, ICodeWriter};
+use parser::arithmetic_type::ArithmeticType;
+use parser::command_type::CommandType;
+use parser::Parser;
+use std::convert::TryFrom;
 use std::fs::File;
 use std::io::Write;
 use std::mem::swap;
-use parser::Parser;
-use std::convert::TryFrom;
-use parser::command_type::CommandType;
-use parser::arithmetic_type::ArithmeticType;
 
-impl ICodeWriter for CodeWriter{
+impl ICodeWriter for CodeWriter {
     fn new(path: &str) -> Self {
         let file = File::create(path).expect("Create file failed.");
-        Self{
+        Self {
             export_dir: file,
             write_buffer: Vec::<u8>::new(),
             parsers: Vec::<Parser>::new(),
@@ -18,7 +18,8 @@ impl ICodeWriter for CodeWriter{
     }
 
     fn set_file_name(&mut self, file_name: &str) {
-        let new_file = File::open(file_name).expect("set_file_name: `File::open()` was failed. Maybe such file don't exist");
+        let new_file = File::open(file_name)
+            .expect("set_file_name: `File::open()` was failed. Maybe such file don't exist");
         self.parsers.push(Parser::new(new_file));
     }
 
@@ -29,7 +30,11 @@ impl ICodeWriter for CodeWriter{
 
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32) {
         let assemble_code = format!("{} {} {}\n", <&'static str>::from(command), segment, index);
-        let mut buffer = assemble_code.as_bytes().iter().copied().collect::<Vec<u8>>();
+        let mut buffer = assemble_code
+            .as_bytes()
+            .iter()
+            .copied()
+            .collect::<Vec<u8>>();
         self.write_buffer.append(&mut buffer);
     }
 
@@ -39,7 +44,11 @@ impl ICodeWriter for CodeWriter{
         let mut write_buffer = Vec::<u8>::new();
         swap(&mut write_buffer, &mut self.write_buffer);
 
-        self.export_dir.write_all(&write_buffer).expect("close(): `write_all()` was failed.");
-        self.export_dir.flush().expect("close(): `.flush()` was failed. Are you using this file?");
+        self.export_dir
+            .write_all(&write_buffer)
+            .expect("close(): `write_all()` was failed.");
+        self.export_dir
+            .flush()
+            .expect("close(): `.flush()` was failed. Are you using this file?");
     }
 }

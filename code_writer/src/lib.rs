@@ -1,16 +1,16 @@
 mod code_writer;
 
-use std::fs::File;
-use parser::Parser;
 use parser::command_type::CommandType;
+use parser::Parser;
+use std::fs::File;
 
-struct CodeWriter{
+struct CodeWriter {
     export_dir: File,
     write_buffer: Vec<u8>,
-    parsers: Vec<Parser>
+    parsers: Vec<Parser>,
 }
 
-trait ICodeWriter{
+trait ICodeWriter {
     fn new(path: &str) -> Self;
     fn set_file_name(&mut self, file_name: &str);
     fn write_arithmetic(&mut self, command: &str);

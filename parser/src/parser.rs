@@ -1,10 +1,10 @@
+use crate::command_type::CommandType;
 use crate::{IParser, Parser};
+use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use std::convert::TryFrom;
-use crate::command_type::CommandType;
 
-impl Parser{
+impl Parser {
     pub fn new(file: File) -> Self {
         let buf_reader = BufReader::new(file);
         let mut stream = separate_line(buf_reader);
@@ -12,14 +12,14 @@ impl Parser{
         // `.pop()` get "last" element of argument.
         stream.reverse();
 
-        Self{
+        Self {
             stream,
             command: None,
         }
     }
 }
 
-impl IParser for Parser{
+impl IParser for Parser {
     fn has_more_commands(&self) -> bool {
         self.stream.len() > 0
     }
@@ -29,7 +29,7 @@ impl IParser for Parser{
             true => {
                 let command = self.stream.pop();
                 self.command = command;
-            },
+            }
             false => (),
         }
     }
@@ -37,7 +37,10 @@ impl IParser for Parser{
     /// Panic when command == None, command == "x", and "non_command _ _"
     fn command_type(&self) -> CommandType {
         let command = self.command.clone().unwrap().clone();
-        let command = command.split_whitespace().next().expect("command_type(): String == \"\"");
+        let command = command
+            .split_whitespace()
+            .next()
+            .expect("command_type(): String == \"\"");
         CommandType::try_from(command).unwrap()
     }
 
@@ -56,7 +59,7 @@ impl IParser for Parser{
             ["not"] => "not".to_string(),
             [_command, arg1, ..] => arg1.to_string(),
             _ => panic!("arg1(): unexpected argument."),
-        }
+        };
     }
 
     fn arg2(&self) -> i32 {
@@ -66,7 +69,7 @@ impl IParser for Parser{
     }
 }
 
-fn separate_line(mut buf_reader: BufReader<File>) -> Vec<String>{
+fn separate_line(mut buf_reader: BufReader<File>) -> Vec<String> {
     let mut result = Vec::<String>::new();
     let mut buf = String::new();
 

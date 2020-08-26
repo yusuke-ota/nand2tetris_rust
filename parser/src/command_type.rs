@@ -1,6 +1,6 @@
 use std::convert::TryFrom;
 
-pub enum CommandType{
+pub enum CommandType {
     CArithmetic,
     CPush,
     CPop,
@@ -9,10 +9,10 @@ pub enum CommandType{
     CIf,
     CFunction,
     CReturn,
-    CCall
+    CCall,
 }
 
-impl TryFrom<&str> for CommandType{
+impl TryFrom<&str> for CommandType {
     type Error = &'static str;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
@@ -27,11 +27,11 @@ impl TryFrom<&str> for CommandType{
             "C_Return" => Ok(CommandType::CReturn),
             "C_Call" => Ok(CommandType::CCall),
             _ => Err("Cannot convert &str to CommandType"),
-        }
+        };
     }
 }
 
-impl From<CommandType> for &'static str{
+impl From<CommandType> for &'static str {
     fn from(command_type: CommandType) -> Self {
         match command_type {
             // todo: 対応するアセンブリを記載

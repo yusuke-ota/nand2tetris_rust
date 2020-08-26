@@ -1,6 +1,6 @@
 use std::convert::TryFrom;
 
-pub enum ArithmeticType{
+pub enum ArithmeticType {
     Add,
     Sub,
     Neg,
@@ -12,7 +12,7 @@ pub enum ArithmeticType{
     Not,
 }
 
-impl TryFrom<&str> for ArithmeticType{
+impl TryFrom<&str> for ArithmeticType {
     type Error = &'static str;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
@@ -26,12 +26,12 @@ impl TryFrom<&str> for ArithmeticType{
             "and" => Ok(Self::And),
             "or" => Ok(Self::Or),
             "not" => Ok(Self::Not),
-            _ => Err("Convert error")
+            _ => Err("Convert error"),
         }
     }
 }
 
-impl From<ArithmeticType> for Vec<u8>{
+impl From<ArithmeticType> for Vec<u8> {
     fn from(arithmetic_type: ArithmeticType) -> Self {
         return match arithmetic_type {
             ArithmeticType::Add => ADD.to_vec(),
@@ -43,7 +43,7 @@ impl From<ArithmeticType> for Vec<u8>{
             ArithmeticType::And => AND.to_vec(),
             ArithmeticType::Or => OR.to_vec(),
             ArithmeticType::Not => NOT.to_vec(),
-        }
+        };
     }
 }
 
@@ -74,14 +74,12 @@ const SUB: &'static [u8; 42] =
     M=M-D\n\
     @SP\n\
     M=M+1\n";
-const NEG: &'static [u8; 26] =
-    b"@SP\n\
+const NEG: &'static [u8; 26] = b"@SP\n\
     AM=M-1\n\
     M=-M\n\
     @SP\n\
     M=M+1\n";
-const AND: &'static [u8; 42] =
-    b"@SP\n\
+const AND: &'static [u8; 42] = b"@SP\n\
     AM=M-1\n\
     D=A\n\
     @SP\n\
@@ -89,8 +87,7 @@ const AND: &'static [u8; 42] =
     M=D&M\n\
     @SP\n\
     M=M+1\n";
-const OR: &'static [u8; 42] =
-    b"@SP\n\
+const OR: &'static [u8; 42] = b"@SP\n\
     AM=M-1\n\
     D=A\n\
     @SP\n\
@@ -98,14 +95,13 @@ const OR: &'static [u8; 42] =
     M=D|M\n\
     @SP\n\
     M=M+1\n";
-const NOT: &'static [u8; 26] =
-    b"@SP\n\
+const NOT: &'static [u8; 26] = b"@SP\n\
     AM=M-1\n\
     M=!M\n\
     @SP\n\
     M=M+1\n";
 // TODO:Label番号を取得する
-fn eq() -> Vec<u8>{
+fn eq() -> Vec<u8> {
     let mut assemble_code = format!(
         "@SP\n\
         AM=M-1\n\
@@ -121,15 +117,15 @@ fn eq() -> Vec<u8>{
         M=-1\n\
         (label{1})\n\
         @SP\n\
-        M=M+1\n", 0, 1); // todo: 引数に変更
-    // Assemble_code is utf-8.
-    // `.as_mut_vec()` is safe when utf-8.
-    unsafe {
-        assemble_code.as_mut_vec().clone()
-    }
+        M=M+1\n",
+        0, 1
+    ); // todo: 引数に変更
+       // Assemble_code is utf-8.
+       // `.as_mut_vec()` is safe when utf-8.
+    unsafe { assemble_code.as_mut_vec().clone() }
 }
 // TODO:Label番号を取得する
-fn gt() -> Vec<u8>{
+fn gt() -> Vec<u8> {
     let mut assemble_code = format!(
         "@SP\n\
         AM=M-1\n\
@@ -145,15 +141,15 @@ fn gt() -> Vec<u8>{
         M=-1\n\
         (label{1})\n\
         @SP\n\
-        M=M+1\n", 0, 1); // todo: 引数に変更
-    // Assemble_code is utf-8.
-    // `.as_mut_vec()` is safe when utf-8.
-    unsafe {
-        assemble_code.as_mut_vec().clone()
-    }
+        M=M+1\n",
+        0, 1
+    ); // todo: 引数に変更
+       // Assemble_code is utf-8.
+       // `.as_mut_vec()` is safe when utf-8.
+    unsafe { assemble_code.as_mut_vec().clone() }
 }
 // TODO:Label番号を取得する
-fn lt() -> Vec<u8>{
+fn lt() -> Vec<u8> {
     let mut assemble_code = format!(
         "@SP\n\
         AM=M-1\n\
@@ -169,10 +165,10 @@ fn lt() -> Vec<u8>{
         M=-1\n\
         (label{1})\n\
         @SP\n\
-        M=M+1\n", 0, 1); // todo: 引数に変更
-    // Assemble_code is utf-8.
-    // `.as_mut_vec()` is safe when utf-8.
-    unsafe {
-        assemble_code.as_mut_vec().clone()
-    }
+        M=M+1\n",
+        0, 1
+    ); // todo: 引数に変更
+       // Assemble_code is utf-8.
+       // `.as_mut_vec()` is safe when utf-8.
+    unsafe { assemble_code.as_mut_vec().clone() }
 }
