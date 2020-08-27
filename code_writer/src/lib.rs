@@ -5,8 +5,10 @@ use parser::Parser;
 use std::fs::File;
 
 struct CodeWriter {
+    file_name: String,
     export_dir: File,
     write_buffer: Vec<u8>,
+    label_number: u32,
     parsers: Vec<Parser>,
 }
 

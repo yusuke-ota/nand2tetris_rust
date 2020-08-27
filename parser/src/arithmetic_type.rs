@@ -31,15 +31,16 @@ impl TryFrom<&str> for ArithmeticType {
     }
 }
 
-impl From<ArithmeticType> for Vec<u8> {
-    fn from(arithmetic_type: ArithmeticType) -> Self {
-        return match arithmetic_type {
+// todo: code_writerに移動
+impl ArithmeticType {
+    pub fn as_assembly(&self, label_num: &mut u32) -> Vec<u8> {
+        return match self {
             ArithmeticType::Add => ADD.to_vec(),
             ArithmeticType::Sub => SUB.to_vec(),
             ArithmeticType::Neg => NEG.to_vec(),
-            ArithmeticType::Eq => eq(),
-            ArithmeticType::Gt => gt(),
-            ArithmeticType::Lt => lt(),
+            ArithmeticType::Eq => eq(label_num),
+            ArithmeticType::Gt => gt(label_num),
+            ArithmeticType::Lt => lt(label_num),
             ArithmeticType::And => AND.to_vec(),
             ArithmeticType::Or => OR.to_vec(),
             ArithmeticType::Not => NOT.to_vec(),
@@ -100,8 +101,9 @@ const NOT: &'static [u8; 26] = b"@SP\n\
     M=!M\n\
     @SP\n\
     M=M+1\n";
-// TODO:Label番号を取得する
-fn eq() -> Vec<u8> {
+
+fn eq(label_num: &mut u32) -> Vec<u8> {
+    let temp_num = *label_num + 1;
     let mut assemble_code = format!(
         "@SP\n\
         AM=M-1\n\
@@ -118,14 +120,16 @@ fn eq() -> Vec<u8> {
         (label{1})\n\
         @SP\n\
         M=M+1\n",
-        0, 1
-    ); // todo: 引数に変更
-       // Assemble_code is utf-8.
-       // `.as_mut_vec()` is safe when utf-8.
+        temp_num,
+        temp_num + 1
+    );
+    *label_num += 2;
+    // Assemble_code is utf-8.
+    // `.as_mut_vec()` is safe when utf-8.
     unsafe { assemble_code.as_mut_vec().clone() }
 }
-// TODO:Label番号を取得する
-fn gt() -> Vec<u8> {
+fn gt(label_num: &mut u32) -> Vec<u8> {
+    let temp_num = *label_num + 1;
     let mut assemble_code = format!(
         "@SP\n\
         AM=M-1\n\
@@ -142,14 +146,16 @@ fn gt() -> Vec<u8> {
         (label{1})\n\
         @SP\n\
         M=M+1\n",
-        0, 1
-    ); // todo: 引数に変更
-       // Assemble_code is utf-8.
-       // `.as_mut_vec()` is safe when utf-8.
+        temp_num,
+        temp_num + 1
+    );
+    *label_num += 2;
+    // Assemble_code is utf-8.
+    // `.as_mut_vec()` is safe when utf-8.
     unsafe { assemble_code.as_mut_vec().clone() }
 }
-// TODO:Label番号を取得する
-fn lt() -> Vec<u8> {
+fn lt(label_num: &mut u32) -> Vec<u8> {
+    let temp_num = *label_num + 1;
     let mut assemble_code = format!(
         "@SP\n\
         AM=M-1\n\
@@ -166,9 +172,11 @@ fn lt() -> Vec<u8> {
         (label{1})\n\
         @SP\n\
         M=M+1\n",
-        0, 1
-    ); // todo: 引数に変更
-       // Assemble_code is utf-8.
-       // `.as_mut_vec()` is safe when utf-8.
+        temp_num,
+        temp_num + 1
+    );
+    *label_num += 2;
+    // Assemble_code is utf-8.
+    // `.as_mut_vec()` is safe when utf-8.
     unsafe { assemble_code.as_mut_vec().clone() }
 }

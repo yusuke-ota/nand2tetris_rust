@@ -10,9 +10,13 @@ use std::mem::swap;
 impl ICodeWriter for CodeWriter {
     fn new(path: &str) -> Self {
         let file = File::create(path).expect("Create file failed.");
+        // UNWRAP: path is "*/filename" or "filename", this .last() always success.
+        let file_name = path.split('/').last().unwrap().to_string();
         Self {
+            file_name,
             export_dir: file,
             write_buffer: Vec::<u8>::new(),
+            label_number: 0,
             parsers: Vec::<Parser>::new(),
         }
     }
@@ -25,17 +29,13 @@ impl ICodeWriter for CodeWriter {
 
     fn write_arithmetic(&mut self, command: &str) {
         let arithmetic_type = ArithmeticType::try_from(command).unwrap_or_else(|err| panic!(err));
-        self.write_buffer.append(&mut arithmetic_type.into());
+        self.write_buffer
+            .append(&mut arithmetic_type.as_assembly(&mut self.label_number));
     }
 
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32) {
-        let assemble_code = format!("{} {} {}\n", <&'static str>::from(command), segment, index);
-        let mut buffer = assemble_code
-            .as_bytes()
-            .iter()
-            .copied()
-            .collect::<Vec<u8>>();
-        self.write_buffer.append(&mut buffer);
+        let mut assemble_code = command.as_assembly(&self.file_name, segment, index);
+        self.write_buffer.append(&mut assemble_code);
     }
 
     fn close(&mut self) {
