@@ -1,4 +1,4 @@
-use crate::{CodeWriter, ICodeWriter};
+use crate::{ArithmeticAssemblyGenerator, CodeWriter, CommandAssemblyGenerator, ICodeWriter};
 use parser::arithmetic_type::ArithmeticType;
 use parser::command_type::CommandType;
 use parser::Parser;

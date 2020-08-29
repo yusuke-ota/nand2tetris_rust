@@ -1,4 +1,6 @@
+mod arithmetic_assembly;
 mod code_writer;
+mod command_assembly;
 
 use parser::command_type::CommandType;
 use parser::Parser;
@@ -18,6 +20,14 @@ trait ICodeWriter {
     fn write_arithmetic(&mut self, command: &str);
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32);
     fn close(&mut self);
+}
+
+trait CommandAssemblyGenerator {
+    fn as_assembly(&self, filename: &str, segment: String, index: u32) -> Vec<u8>;
+}
+
+trait ArithmeticAssemblyGenerator {
+    fn as_assembly(&self, label_num: &mut u32) -> Vec<u8>;
 }
 
 #[cfg(test)]
