@@ -2,7 +2,6 @@ use crate::enums::{classification_symbol, CommandType, CompType, DestType, JumpT
 use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use crate::enums::{JumpType, DestType, CompType, CommandType, classification_symbol, Symbol};
 
 #[derive(Clone, Debug)]
 pub struct Parser {
@@ -56,7 +55,7 @@ impl Parser {
             '@' => Ok(CommandType::ACommand(self.command.clone().unwrap())),
             '(' => Ok(CommandType::LCommand(self.command.clone().unwrap())),
             'A' | 'D' | 'M' | '0' => Ok(CommandType::CCommand(self.command.clone().unwrap())),
-            _ => Err("Can'not detect command type!"),
+            _ => Err("Can't detect command type!"),
         };
     }
 

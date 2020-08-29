@@ -1,7 +1,7 @@
+use asembler::tools::*;
 use std::env;
 use std::fs::File;
 use std::io::Write;
-use asembler::tools::*;
 
 fn main() {
     let args = env::args().collect::<Vec<String>>();
@@ -33,9 +33,7 @@ fn main() {
             Ok(CommandType::ACommand(_)) => match parser.symbol().expect("error: ") {
                 Symbol::Address(num) => write_string.push_str(&format!("{:016b}", num)),
                 Symbol::Symbol(string) => {
-                    let num = symbol_table
-                        .get_address(&string)
-                        .expect("Failed");
+                    let num = symbol_table.get_address(&string).expect("Failed");
                     write_string.push_str(&format!("{:016b}", num))
                 }
             },
