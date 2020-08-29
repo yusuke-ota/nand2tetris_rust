@@ -1,4 +1,4 @@
-use crate::enums::{CompType, DestType, JumpType};
+use crate::tools::{CompType, DestType, JumpType};
 
 pub fn dest(dest_type: DestType) -> &'static str {
     return match dest_type {

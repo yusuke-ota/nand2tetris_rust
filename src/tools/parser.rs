@@ -1,16 +1,11 @@
-use crate::enums::{classification_symbol, CommandType, CompType, DestType, JumpType, Symbol};
+use crate::tools::{classification_symbol, CommandType, CompType, DestType, JumpType, Symbol};
+use crate::{IParser, Parser};
 use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-#[derive(Clone, Debug)]
-pub struct Parser {
-    buffer: Vec<String>,
-    command: Option<String>,
-}
-
-impl Parser {
-    pub fn new(file: File) -> Self {
+impl IParser for Parser {
+    fn new(file: File) -> Self {
         let mut buf_reader = BufReader::new(file);
         let mut buf = String::new();
         let mut buffer = Vec::new();
@@ -32,14 +27,14 @@ impl Parser {
         }
     }
 
-    pub fn has_more_commands(&self) -> bool {
+    fn has_more_commands(&self) -> bool {
         match self.buffer.len() {
             len if len > 0 => true,
             _ => false,
         }
     }
 
-    pub fn advance(&mut self) {
+    fn advance(&mut self) {
         if !self.has_more_commands() {
             panic!();
         }
@@ -49,7 +44,7 @@ impl Parser {
         self.command = Some(new_command);
     }
 
-    pub fn command_type(&self) -> Result<CommandType, &'static str> {
+    fn command_type(&self) -> Result<CommandType, &'static str> {
         let first_char = self.command.as_ref().unwrap().chars().next().unwrap();
         return match first_char {
             '@' => Ok(CommandType::ACommand(self.command.clone().unwrap())),
@@ -59,7 +54,7 @@ impl Parser {
         };
     }
 
-    pub fn symbol(&self) -> Result<Symbol, &'static str> {
+    fn symbol(&self) -> Result<Symbol, &'static str> {
         return match self.command_type() {
             // A command: "@xxx" (x is number)
             Ok(CommandType::ACommand(command)) => {
@@ -75,7 +70,7 @@ impl Parser {
         };
     }
 
-    pub fn dest(&self) -> Result<DestType, &'static str> {
+    fn dest(&self) -> Result<DestType, &'static str> {
         let c_command;
         match self.command_type() {
             Ok(CommandType::CCommand(command)) => c_command = command,
@@ -90,7 +85,7 @@ impl Parser {
         DestType::try_from(dest_string.as_str())
     }
 
-    pub fn comp(&self) -> Result<CompType, &'static str> {
+    fn comp(&self) -> Result<CompType, &'static str> {
         let c_command;
         match self.command_type() {
             Ok(CommandType::CCommand(command)) => c_command = command,
@@ -116,7 +111,7 @@ impl Parser {
         CompType::try_from(comp_string.as_str())
     }
 
-    pub fn jump(&self) -> Result<JumpType, &'static str> {
+    fn jump(&self) -> Result<JumpType, &'static str> {
         let c_command;
         match self.command_type() {
             Ok(CommandType::CCommand(command)) => c_command = command,

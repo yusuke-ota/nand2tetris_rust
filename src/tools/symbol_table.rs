@@ -1,9 +1,5 @@
+use crate::{ISymbolTable, SymbolTable};
 use std::collections::HashMap;
-
-#[derive(Debug)]
-pub struct SymbolTable {
-    dictionary: HashMap<String, i32>,
-}
 
 const DEFINED_SYMBOL: [(&str, i32); 23] = [
     ("SP", 0),
@@ -31,8 +27,8 @@ const DEFINED_SYMBOL: [(&str, i32); 23] = [
     ("KBD", 24576),
 ];
 
-impl SymbolTable {
-    pub fn new() -> Self {
+impl ISymbolTable for SymbolTable {
+    fn new() -> Self {
         let mut dictionary: HashMap<String, i32> = HashMap::new();
         for &(symbol, address) in DEFINED_SYMBOL.iter() {
             dictionary.insert(symbol.to_string(), address);
@@ -41,15 +37,15 @@ impl SymbolTable {
         Self { dictionary }
     }
 
-    pub fn add_entry(&mut self, symbol: String, address: i32) {
+    fn add_entry(&mut self, symbol: String, address: i32) {
         self.dictionary.insert(symbol, address);
     }
 
-    pub fn contains(&self, symbol: &str) -> bool {
+    fn contains(&self, symbol: &str) -> bool {
         self.dictionary.contains_key(symbol)
     }
 
-    pub fn get_address(&self, symbol: &str) -> Result<i32, &'static str> {
+    fn get_address(&self, symbol: &str) -> Result<i32, &'static str> {
         match self.dictionary.get(symbol) {
             Some(&address) => Ok(address),
             None => Err("Such symbol dose not exist in SymbolTable"),

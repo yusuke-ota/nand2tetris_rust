@@ -1,4 +1,5 @@
-use asembler::tools::*;
+use asembler::tools::{comp, dest, jump, CommandType, CompType, DestType, JumpType, Symbol};
+use asembler::{IParser, ISymbolTable, Parser, SymbolTable};
 use std::env;
 use std::fs::File;
 use std::io::Write;
