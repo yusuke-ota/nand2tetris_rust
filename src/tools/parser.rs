@@ -77,12 +77,11 @@ impl IParser for Parser {
             _ => return Err("This type is not CCommand!"),
         }
         let separate_place = c_command.find('=');
-        let dest_string;
-        match separate_place {
-            Some(num) => dest_string = c_command[0..num].to_string(),
+        let dest_string = match separate_place {
+            Some(num) => &c_command[0..num],
             None => return Err("Cannot found ="),
-        }
-        DestType::try_from(dest_string.as_str())
+        };
+        DestType::try_from(dest_string)
     }
 
     fn comp(&self) -> Result<CompType, &'static str> {
@@ -102,13 +101,13 @@ impl IParser for Parser {
         let separate_place_semi_colon = c_command.find(';');
 
         if let Some(separate) = separate_place_equal {
-            comp_string = c_command[separate + 1..end].to_string();
+            comp_string = &c_command[separate + 1..end];
         } else if let Some(separate) = separate_place_semi_colon {
-            comp_string = c_command[0..separate].to_string();
+            comp_string = &c_command[0..separate];
         } else {
             return Err("Cannot found = or ;");
         }
-        CompType::try_from(comp_string.as_str())
+        CompType::try_from(comp_string)
     }
 
     fn jump(&self) -> Result<JumpType, &'static str> {
@@ -124,9 +123,9 @@ impl IParser for Parser {
         let separate_place = c_command.find(";");
         let jump_string;
         match separate_place {
-            Some(num) => jump_string = c_command[num + 1..end].to_string(),
+            Some(num) => jump_string = &c_command[num + 1..end],
             None => return Err("Cannot found ;"),
         }
-        JumpType::try_from(jump_string.as_str())
+        JumpType::try_from(jump_string)
     }
 }
