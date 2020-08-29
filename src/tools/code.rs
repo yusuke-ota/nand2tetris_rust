@@ -1,60 +1,60 @@
-use crate::enums::{DestType, JumpType, CompType};
+use crate::enums::{CompType, DestType, JumpType};
 
-pub fn dest(dest_type: DestType) -> [u8; 3] {
+pub fn dest(dest_type: DestType) -> &'static str {
     return match dest_type {
-        DestType::Null => [0, 0, 0],
-        DestType::M => [0, 0, 1],
-        DestType::D => [0, 1, 0],
-        DestType::MD => [0, 1, 1],
-        DestType::A => [1, 0, 0],
-        DestType::AM => [1, 0, 1],
-        DestType::AD => [1, 1, 0],
-        DestType::AMD => [1, 1, 1],
+        DestType::Null => "000",
+        DestType::M => "001",
+        DestType::D => "010",
+        DestType::MD => "011",
+        DestType::A => "100",
+        DestType::AM => "101",
+        DestType::AD => "110",
+        DestType::AMD => "111",
     };
 }
 
-pub fn jump(jump_type: JumpType) -> [u8; 3] {
+pub fn jump(jump_type: JumpType) -> &'static str {
     return match jump_type {
-        JumpType::Null => [0, 0, 0],
-        JumpType::JGT => [0, 0, 1],
-        JumpType::JEQ => [0, 1, 0],
-        JumpType::JGE => [0, 1, 1],
-        JumpType::JLT => [1, 0, 0],
-        JumpType::JNE => [1, 0, 1],
-        JumpType::JLE => [1, 1, 0],
-        JumpType::JMP => [1, 1, 1],
+        JumpType::Null => "000",
+        JumpType::JGT => "001",
+        JumpType::JEQ => "010",
+        JumpType::JGE => "011",
+        JumpType::JLT => "100",
+        JumpType::JNE => "101",
+        JumpType::JLE => "110",
+        JumpType::JMP => "111",
     };
 }
 
-pub fn comp(comp_type: CompType) -> [u8; 7] {
+pub fn comp(comp_type: CompType) -> &'static str {
     return match comp_type {
-        CompType::Zero => [0, 1, 0, 1, 0, 1, 0],
-        CompType::One => [0, 1, 1, 1, 1, 1, 1],
-        CompType::MinusOne => [0, 1, 1, 1, 0, 1, 0],
-        CompType::D => [0, 0, 0, 1, 1, 0, 0],
-        CompType::A => [0, 1, 1, 0, 0, 0, 0],
-        CompType::NotD => [0, 0, 0, 1, 1, 0, 1],
-        CompType::NotA => [0, 1, 1, 0, 0, 0, 1],
-        CompType::MinusD => [0, 0, 0, 1, 1, 1, 1],
-        CompType::MinusA => [0, 1, 1, 0, 0, 1, 1],
-        CompType::DPlusOne => [0, 0, 1, 1, 1, 1, 1],
-        CompType::APlusOne => [0, 1, 1, 0, 1, 1, 1],
-        CompType::DMinusOne => [0, 0, 0, 1, 1, 1, 0],
-        CompType::AMinusOne => [0, 1, 1, 0, 0, 1, 0],
-        CompType::DPlusA => [0, 0, 0, 0, 0, 1, 0],
-        CompType::DMinusA => [0, 1, 0, 0, 0, 1, 1],
-        CompType::AMinusD => [0, 0, 0, 0, 1, 1, 1],
-        CompType::DAndA => [0, 0, 0, 0, 0, 0, 0],
-        CompType::DOrA => [0, 0, 1, 0, 1, 0, 1],
-        CompType::M => [1, 1, 1, 0, 0, 0, 0],
-        CompType::NotM => [1, 1, 1, 0, 0, 0, 1],
-        CompType::MinusM => [1, 1, 1, 0, 0, 1, 1],
-        CompType::MPlusOne => [1, 1, 1, 0, 1, 1, 1],
-        CompType::MMinusOne => [1, 1, 1, 0, 0, 1, 0],
-        CompType::DPlusM => [1, 0, 0, 0, 0, 1, 0],
-        CompType::DMinusM => [1, 0, 1, 0, 0, 1, 1],
-        CompType::MMinusD => [1, 0, 0, 0, 1, 1, 1],
-        CompType::DAndM => [1, 0, 0, 0, 0, 0, 0],
-        CompType::DOrM => [1, 0, 1, 0, 1, 0, 1],
+        CompType::Zero => "0101010",
+        CompType::One => "0111111",
+        CompType::MinusOne => "0111010",
+        CompType::D => "0001100",
+        CompType::A => "0110000",
+        CompType::NotD => "0001101",
+        CompType::NotA => "0110001",
+        CompType::MinusD => "0001111",
+        CompType::MinusA => "0110011",
+        CompType::DPlusOne => "0011111",
+        CompType::APlusOne => "0110111",
+        CompType::DMinusOne => "0001110",
+        CompType::AMinusOne => "0110010",
+        CompType::DPlusA => "0000010",
+        CompType::DMinusA => "0100011",
+        CompType::AMinusD => "0000111",
+        CompType::DAndA => "0000000",
+        CompType::DOrA => "0010101",
+        CompType::M => "1110000",
+        CompType::NotM => "1110001",
+        CompType::MinusM => "1110011",
+        CompType::MPlusOne => "1110111",
+        CompType::MMinusOne => "1110010",
+        CompType::DPlusM => "1000010",
+        CompType::DMinusM => "1010011",
+        CompType::MMinusD => "1000111",
+        CompType::DAndM => "1000000",
+        CompType::DOrM => "1010101",
     };
 }

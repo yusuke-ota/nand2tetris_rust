@@ -60,17 +60,17 @@ fn make_c_command_machine_code(parser: &Parser) -> String {
     // push header
     machine_code.push_str("111");
     // push comp
-    for &binary in comp(parser.comp().unwrap_or(CompType::Zero)).iter() {
-        machine_code.push_str(&binary.to_string());
-    }
+    let binary = comp(parser.comp().unwrap_or(CompType::Zero));
+    machine_code.push_str(binary);
+
     // push dest
-    for &binary in dest(parser.dest().unwrap_or(DestType::Null)).iter() {
-        machine_code.push_str(&binary.to_string());
-    }
+    let binary = dest(parser.dest().unwrap_or(DestType::Null));
+    machine_code.push_str(binary);
+
     // push jump
-    for &binary in jump(parser.jump().unwrap_or(JumpType::Null)).iter() {
-        machine_code.push_str(&binary.to_string());
-    }
+    let binary = jump(parser.jump().unwrap_or(JumpType::Null));
+    machine_code.push_str(binary);
+
     machine_code
 }
 
