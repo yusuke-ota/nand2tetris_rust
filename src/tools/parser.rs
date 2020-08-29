@@ -1,3 +1,5 @@
+use crate::enums::{classification_symbol, CommandType, CompType, DestType, JumpType, Symbol};
+use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 use crate::enums::{JumpType, DestType, CompType, CommandType, classification_symbol, Symbol};
@@ -86,18 +88,7 @@ impl Parser {
             Some(num) => dest_string = c_command[0..num].to_string(),
             None => return Err("Cannot found ="),
         }
-        let dest_string: &str = &dest_string;
-        return match dest_string {
-            "0" => Ok(DestType::Null),
-            "M" => Ok(DestType::M),
-            "D" => Ok(DestType::D),
-            "MD" => Ok(DestType::MD),
-            "A" => Ok(DestType::A),
-            "AM" => Ok(DestType::AM),
-            "AD" => Ok(DestType::AD),
-            "AMD" => Ok(DestType::AMD),
-            _ => Err("Cannot parse to DestType"),
-        };
+        DestType::try_from(dest_string.as_str())
     }
 
     pub fn comp(&self) -> Result<CompType, &'static str> {
@@ -123,39 +114,7 @@ impl Parser {
         } else {
             return Err("Cannot found = or ;");
         }
-
-        let comp_string: &str = &comp_string;
-        return match comp_string {
-            "0" => Ok(CompType::Zero),
-            "1" => Ok(CompType::One),
-            "-1" => Ok(CompType::MinusOne),
-            "D" => Ok(CompType::D),
-            "A" => Ok(CompType::A),
-            "!D" => Ok(CompType::NotD),
-            "!A" => Ok(CompType::NotA),
-            "-D" => Ok(CompType::MinusD),
-            "-A" => Ok(CompType::MinusA),
-            "D+1" => Ok(CompType::DPlusOne),
-            "A+1" => Ok(CompType::APlusOne),
-            "D-1" => Ok(CompType::DMinusOne),
-            "A-1" => Ok(CompType::AMinusOne),
-            "D+A" => Ok(CompType::DPlusA),
-            "D-A" => Ok(CompType::DMinusA),
-            "A-D" => Ok(CompType::AMinusD),
-            "D&A" => Ok(CompType::DAndA),
-            "D|A" => Ok(CompType::DOrA),
-            "M" => Ok(CompType::M),
-            "!M" => Ok(CompType::NotM),
-            "-M" => Ok(CompType::MinusM),
-            "M+1" => Ok(CompType::MPlusOne),
-            "M-1" => Ok(CompType::MMinusOne),
-            "D+M" => Ok(CompType::DPlusM),
-            "D-M" => Ok(CompType::DMinusM),
-            "M-D" => Ok(CompType::MMinusD),
-            "D&M" => Ok(CompType::DAndM),
-            "D|M" => Ok(CompType::DOrM),
-            _ => Err("Unexpected value of Comp"),
-        };
+        CompType::try_from(comp_string.as_str())
     }
 
     pub fn jump(&self) -> Result<JumpType, &'static str> {
@@ -174,17 +133,6 @@ impl Parser {
             Some(num) => jump_string = c_command[num + 1..end].to_string(),
             None => return Err("Cannot found ;"),
         }
-        let jump_string: &str = &jump_string;
-        return match jump_string {
-            "null" => Ok(JumpType::Null),
-            "JGT" => Ok(JumpType::JGT),
-            "JEQ" => Ok(JumpType::JEQ),
-            "JGE" => Ok(JumpType::JGE),
-            "JLT" => Ok(JumpType::JLT),
-            "JNE" => Ok(JumpType::JNE),
-            "JLE" => Ok(JumpType::JLE),
-            "JMP" => Ok(JumpType::JMP),
-            _ => Err("Jump parse error!"),
-        };
+        JumpType::try_from(jump_string.as_str())
     }
 }
