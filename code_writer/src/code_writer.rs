@@ -28,7 +28,11 @@ impl ICodeWriter for CodeWriter {
     }
 
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32) {
-        let mut assemble_code = command.as_assembly(self.file_name.as_ref().expect("file name isn't set."), segment, index);
+        let mut assemble_code = command.as_assembly(
+            self.file_name.as_ref().expect("file name isn't set."),
+            segment,
+            index,
+        );
         self.write_buffer.append(&mut assemble_code);
     }
 

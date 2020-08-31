@@ -1,7 +1,7 @@
-use std::env;
 use code_writer::{CodeWriter, ICodeWriter};
 use parser::command_type::CommandType;
-use parser::{Parser, IParser};
+use parser::{IParser, Parser};
+use std::env;
 use std::fs::File;
 
 fn main() {
@@ -18,7 +18,7 @@ fn main() {
     let file_name = args[1].split('/').last().unwrap().to_string();
     code_writer.set_file_name(file_name);
 
-    while parser.has_more_commands(){
+    while parser.has_more_commands() {
         parser.advance();
         process_command(&parser, &mut code_writer);
     }
@@ -31,7 +31,7 @@ fn process_command(parser: &Parser, code_writer: &mut CodeWriter) {
         CommandType::CArithmetic => {
             let arithmetic_type = parser.arg1();
             code_writer.write_arithmetic(arithmetic_type.as_str())
-        },
+        }
         CommandType::CPush => {
             let segment = parser.arg1();
             let index = parser.arg2();
@@ -42,11 +42,11 @@ fn process_command(parser: &Parser, code_writer: &mut CodeWriter) {
             let index = parser.arg2();
             code_writer.write_push_pop(CommandType::CPop, segment, index)
         }
-        CommandType::CLabel => { unimplemented!() }
-        CommandType::CGoto => { unimplemented!() }
-        CommandType::CIf => { unimplemented!() }
-        CommandType::CFunction => { unimplemented!() }
-        CommandType::CReturn => { unimplemented!() }
-        CommandType::CCall => { unimplemented!() }
+        CommandType::CLabel => unimplemented!(),
+        CommandType::CGoto => unimplemented!(),
+        CommandType::CIf => unimplemented!(),
+        CommandType::CFunction => unimplemented!(),
+        CommandType::CReturn => unimplemented!(),
+        CommandType::CCall => unimplemented!(),
     }
 }
