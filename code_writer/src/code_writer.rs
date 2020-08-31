@@ -1,7 +1,6 @@
 use crate::{ArithmeticAssemblyGenerator, CodeWriter, CommandAssemblyGenerator, ICodeWriter};
 use parser::arithmetic_type::ArithmeticType;
 use parser::command_type::CommandType;
-use parser::Parser;
 use std::convert::TryFrom;
 use std::fs::File;
 use std::io::Write;
@@ -10,21 +9,16 @@ use std::mem::swap;
 impl ICodeWriter for CodeWriter {
     fn new(path: &str) -> Self {
         let file = File::create(path).expect("Create file failed.");
-        // UNWRAP: path is "*/filename" or "filename", this .last() always success.
-        let file_name = path.split('/').last().unwrap().to_string();
         Self {
-            file_name,
+            file_name: None,
             export_dir: file,
             write_buffer: Vec::<u8>::new(),
             label_number: 0,
-            parsers: Vec::<Parser>::new(),
         }
     }
 
-    fn set_file_name(&mut self, file_name: &str) {
-        let new_file = File::open(file_name)
-            .expect("set_file_name: `File::open()` was failed. Maybe such file don't exist");
-        self.parsers.push(Parser::new(new_file));
+    fn set_file_name(&mut self, file_name: String) {
+        self.file_name = Some(file_name);
     }
 
     fn write_arithmetic(&mut self, command: &str) {
@@ -34,7 +28,7 @@ impl ICodeWriter for CodeWriter {
     }
 
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32) {
-        let mut assemble_code = command.as_assembly(&self.file_name, segment, index);
+        let mut assemble_code = command.as_assembly(self.file_name.as_ref().expect("file name isn't set."), segment, index);
         self.write_buffer.append(&mut assemble_code);
     }
 

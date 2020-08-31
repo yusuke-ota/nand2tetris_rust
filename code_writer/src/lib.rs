@@ -3,30 +3,28 @@ mod code_writer;
 mod command_assembly;
 
 use parser::command_type::CommandType;
-use parser::Parser;
 use std::fs::File;
 
-struct CodeWriter {
-    file_name: String,
+pub struct CodeWriter {
+    file_name: Option<String>,
     export_dir: File,
     write_buffer: Vec<u8>,
     label_number: u32,
-    parsers: Vec<Parser>,
 }
 
-trait ICodeWriter {
+pub trait ICodeWriter {
     fn new(path: &str) -> Self;
-    fn set_file_name(&mut self, file_name: &str);
+    fn set_file_name(&mut self, file_name: String);
     fn write_arithmetic(&mut self, command: &str);
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32);
     fn close(&mut self);
 }
 
-trait CommandAssemblyGenerator {
+pub trait CommandAssemblyGenerator {
     fn as_assembly(&self, filename: &str, segment: String, index: u32) -> Vec<u8>;
 }
 
-trait ArithmeticAssemblyGenerator {
+pub trait ArithmeticAssemblyGenerator {
     fn as_assembly(&self, label_num: &mut u32) -> Vec<u8>;
 }
 
