@@ -36,7 +36,7 @@ impl IParser for Parser {
 
     /// Panic when command == None, command == "x", and "non_command _ _"
     fn command_type(&self) -> CommandType {
-        let command = self.command.clone().unwrap().clone();
+        let command = self.command.as_ref().unwrap().clone();
         let command = command
             .split_whitespace()
             .next()
@@ -45,7 +45,7 @@ impl IParser for Parser {
     }
 
     fn arg1(&self) -> String {
-        let command = self.command.clone().unwrap().clone();
+        let command = self.command.as_ref().unwrap().clone();
         let command = command.split_whitespace().collect::<Vec<&str>>();
         return match command[..] {
             ["add"] => "add".to_string(),
@@ -62,10 +62,10 @@ impl IParser for Parser {
         };
     }
 
-    fn arg2(&self) -> i32 {
+    fn arg2(&self) -> u32 {
         let command = self.command.clone().unwrap().clone();
         let command = command.split_whitespace().collect::<Vec<&str>>();
-        command[2].parse::<i32>().expect("arg2(): parse error.")
+        command[2].parse::<u32>().expect("arg2(): parse error.")
     }
 }
 

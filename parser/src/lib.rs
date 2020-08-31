@@ -20,7 +20,7 @@ pub trait IParser {
     /// * CPop
     /// * CFunction
     /// * CCall
-    fn arg2(&self) -> i32;
+    fn arg2(&self) -> u32;
 }
 
 #[cfg(test)]
