@@ -1,5 +1,6 @@
 use std::convert::TryFrom;
 
+#[derive(Eq, PartialEq, Debug)]
 pub enum CommandType {
     CArithmetic,
     CPush,

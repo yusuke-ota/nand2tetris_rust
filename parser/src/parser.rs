@@ -79,3 +79,81 @@ fn separate_line(mut buf_reader: BufReader<File>) -> Vec<String> {
 
     result
 }
+
+#[cfg(test)]
+mod tests{
+    use crate::{Parser, ParserPublicAPI};
+    use crate::command_type::CommandType;
+
+    fn generate_dummy_parser(stream: &str) -> Parser{
+        let mut stream: Vec<String> = stream.split("\n").map(|str| str.to_string()).collect();
+        stream.reverse();
+        Parser{
+            stream,
+            command: None
+        }
+    }
+
+    #[test]
+    fn has_more_commands_test(){
+        let mut dummy_parser = generate_dummy_parser("first line");
+        assert_eq!(dummy_parser.has_more_commands(), true);
+        dummy_parser.stream.pop();
+        assert_eq!(dummy_parser.has_more_commands(), false);
+    }
+    #[test]
+    fn advance_test(){
+        let mut dummy_parser = generate_dummy_parser("first line");
+        dummy_parser.advance();
+        assert_eq!(dummy_parser.command, Some("first line".to_string()));
+        dummy_parser.advance();
+        assert_eq!(dummy_parser.command, None);
+    }
+    
+    #[test]
+    fn command_type_test(){
+        let mut dummy_parser = generate_dummy_parser(
+            "add\nsub\nneg\neq\ngt\nlt\nand\nor\nnot\n\
+            push\npop\n");
+        let compare_list = [CommandType::CArithmetic, CommandType::CPush, CommandType::CPop];
+        for _ in 0..9_usize{
+            dummy_parser.advance();
+            assert_eq!(dummy_parser.command_type(), compare_list[0]);
+        }
+        for index in 9..11_usize{
+            dummy_parser.advance();
+            assert_eq!(dummy_parser.command_type(), compare_list[index - 8]);
+        }
+    }
+    
+    #[test]
+    fn arg1_test(){
+        let mut dummy_parser = generate_dummy_parser(
+            "add\nsub\nneg\neq\ngt\nlt\nand\nor\nnot\n\
+            push local 2\npop local 2\n"
+            // todo: 8章
+        );
+        let compare_list = [
+            "add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not",
+            "local", "local"
+            // todo: 8章
+            ];
+        for index in 0..11_usize {
+            dummy_parser.advance();
+            assert_eq!(dummy_parser.arg1(), compare_list[index]);
+        }
+    }
+
+    #[test]
+    fn arg2_test(){
+        let mut dummy_parser = generate_dummy_parser(
+            "push local 1\npop local 2\n"
+            // todo: 8章
+        );
+        let compare_list = [1, 2, 3, 4];
+        for index in 0..2_usize {
+            dummy_parser.advance();
+            assert_eq!(dummy_parser.arg2(), compare_list[index]);
+        }
+    }
+}
