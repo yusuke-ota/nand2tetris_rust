@@ -1,4 +1,4 @@
-use crate::{ArithmeticAsAssembly, CodeWriter, CommandAsAssembly, CodeWriterPublicAPI};
+use crate::{ArithmeticAsAssembly, CodeWriter, CodeWriterPublicAPI, CommandAsAssembly};
 use parser::arithmetic_type::ArithmeticType;
 use parser::command_type::CommandType;
 use std::convert::TryFrom;

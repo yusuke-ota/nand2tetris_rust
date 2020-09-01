@@ -18,7 +18,9 @@ impl TryFrom<&str> for CommandType {
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         return match value {
-            "add" | "sub" | "neg" | "eq" | "gt" | "lt" | "and" | "or" | "not" => Ok(CommandType::CArithmetic),
+            "add" | "sub" | "neg" | "eq" | "gt" | "lt" | "and" | "or" | "not" => {
+                Ok(CommandType::CArithmetic)
+            }
             "push" => Ok(CommandType::CPush),
             "pop" => Ok(CommandType::CPop),
             // todo:　.vm内のものに変更

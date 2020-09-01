@@ -1,5 +1,5 @@
 use crate::command_type::CommandType;
-use crate::{ParserPublicAPI, Parser};
+use crate::{Parser, ParserPublicAPI};
 use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -81,63 +81,66 @@ fn separate_line(mut buf_reader: BufReader<File>) -> Vec<String> {
 }
 
 #[cfg(test)]
-mod tests{
-    use crate::{Parser, ParserPublicAPI};
+mod tests {
     use crate::command_type::CommandType;
+    use crate::{Parser, ParserPublicAPI};
 
-    fn generate_dummy_parser(stream: &str) -> Parser{
+    fn generate_dummy_parser(stream: &str) -> Parser {
         let mut stream: Vec<String> = stream.split("\n").map(|str| str.to_string()).collect();
         stream.reverse();
-        Parser{
+        Parser {
             stream,
-            command: None
+            command: None,
         }
     }
 
     #[test]
-    fn has_more_commands_test(){
+    fn has_more_commands_test() {
         let mut dummy_parser = generate_dummy_parser("first line");
         assert_eq!(dummy_parser.has_more_commands(), true);
         dummy_parser.stream.pop();
         assert_eq!(dummy_parser.has_more_commands(), false);
     }
     #[test]
-    fn advance_test(){
+    fn advance_test() {
         let mut dummy_parser = generate_dummy_parser("first line");
         dummy_parser.advance();
         assert_eq!(dummy_parser.command, Some("first line".to_string()));
         dummy_parser.advance();
         assert_eq!(dummy_parser.command, None);
     }
-    
+
     #[test]
-    fn command_type_test(){
+    fn command_type_test() {
         let mut dummy_parser = generate_dummy_parser(
             "add\nsub\nneg\neq\ngt\nlt\nand\nor\nnot\n\
-            push\npop\n");
-        let compare_list = [CommandType::CArithmetic, CommandType::CPush, CommandType::CPop];
-        for _ in 0..9_usize{
+            push\npop\n",
+        );
+        let compare_list = [
+            CommandType::CArithmetic,
+            CommandType::CPush,
+            CommandType::CPop,
+        ];
+        for _ in 0..9_usize {
             dummy_parser.advance();
             assert_eq!(dummy_parser.command_type(), compare_list[0]);
         }
-        for index in 9..11_usize{
+        for index in 9..11_usize {
             dummy_parser.advance();
             assert_eq!(dummy_parser.command_type(), compare_list[index - 8]);
         }
     }
-    
+
     #[test]
-    fn arg1_test(){
+    fn arg1_test() {
         let mut dummy_parser = generate_dummy_parser(
             "add\nsub\nneg\neq\ngt\nlt\nand\nor\nnot\n\
-            push local 2\npop local 2\n"
-            // todo: 8章
+            push local 2\npop local 2\n", // todo: 8章
         );
         let compare_list = [
-            "add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not",
-            "local", "local"
-            // todo: 8章
-            ];
+            "add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not", "local",
+            "local", // todo: 8章
+        ];
         for index in 0..11_usize {
             dummy_parser.advance();
             assert_eq!(dummy_parser.arg1(), compare_list[index]);
@@ -145,10 +148,9 @@ mod tests{
     }
 
     #[test]
-    fn arg2_test(){
+    fn arg2_test() {
         let mut dummy_parser = generate_dummy_parser(
-            "push local 1\npop local 2\n"
-            // todo: 8章
+            "push local 1\npop local 2\n", // todo: 8章
         );
         let compare_list = [1, 2, 3, 4];
         for index in 0..2_usize {

@@ -70,8 +70,7 @@ fn c_push(filename: &str, segment: String, index: u32) -> String {
 fn c_pop(filename: &str, segment: String, index: u32) -> String {
     return match segment.as_str() {
         "constant" => unreachable!(),
-        "local" | "argument" | "this" | "that" =>
-        format!(
+        "local" | "argument" | "this" | "that" => format!(
             "@{0}\n\
                 D=M\n\
                 @{1}\n\
