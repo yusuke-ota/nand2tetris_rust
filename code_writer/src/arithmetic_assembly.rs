@@ -37,7 +37,7 @@ const ADD: &'static [u8; 42] = b"@SP\n\
 // 順番注意
 const SUB: &'static [u8; 42] = b"@SP\n\
     AM=M-1\n\
-    D=A\n\
+    D=M\n\
     @SP\n\
     AM=M-1\n\
     M=M-D\n\
@@ -52,7 +52,7 @@ const NEG: &'static [u8; 26] = b"@SP\n\
 
 const AND: &'static [u8; 42] = b"@SP\n\
     AM=M-1\n\
-    D=A\n\
+    D=M\n\
     @SP\n\
     AM=M-1\n\
     M=D&M\n\
@@ -61,7 +61,7 @@ const AND: &'static [u8; 42] = b"@SP\n\
 
 const OR: &'static [u8; 42] = b"@SP\n\
     AM=M-1\n\
-    D=A\n\
+    D=M\n\
     @SP\n\
     AM=M-1\n\
     M=D|M\n\
@@ -79,19 +79,23 @@ fn eq(label_num: &mut u32) -> Vec<u8> {
     let mut assemble_code = format!(
         "@SP\n\
         AM=M-1\n\
-        D=A\n\
+        D=M\n\
         @SP\n\
         AM=M-1\n\
         D=M-D\n\
         @label{0}\n\
         D;JEQ\n\
-        M=0\n\
+        D=0\n\
         @label{1}\n\
+        0;JMP\n\
         (label{0})\n\
-        M=-1\n\
+        D=-1\n\
         (label{1})\n\
         @SP\n\
-        M=M+1\n",
+        A=M\n\
+        M=D\n\
+        @SP\n\
+        AM=M+1\n",
         temp_num,
         temp_num + 1
     );
@@ -106,19 +110,23 @@ fn gt(label_num: &mut u32) -> Vec<u8> {
     let mut assemble_code = format!(
         "@SP\n\
         AM=M-1\n\
-        D=A\n\
+        D=M\n\
         @SP\n\
         AM=M-1\n\
         D=M-D\n\
         @label{0}\n\
         D;JGT\n\
-        M=0\n\
+        D=0\n\
         @label{1}\n\
+        0;JMP\n\
         (label{0})\n\
-        M=-1\n\
+        D=-1\n\
         (label{1})\n\
         @SP\n\
-        M=M+1\n",
+        A=M\n\
+        M=D\n\
+        @SP\n\
+        AM=M+1\n",
         temp_num,
         temp_num + 1
     );
@@ -133,19 +141,23 @@ fn lt(label_num: &mut u32) -> Vec<u8> {
     let mut assemble_code = format!(
         "@SP\n\
         AM=M-1\n\
-        D=A\n\
+        D=M\n\
         @SP\n\
         AM=M-1\n\
         D=M-D\n\
         @label{0}\n\
         D;JLT\n\
-        M=0\n\
+        D=0\n\
         @label{1}\n\
+        0;JMP\n\
         (label{0})\n\
-        M=-1\n\
+        D=-1\n\
         (label{1})\n\
         @SP\n\
-        M=M+1\n",
+        A=M\n\
+        M=D\n\
+        @SP\n\
+        AM=M+1\n",
         temp_num,
         temp_num + 1
     );

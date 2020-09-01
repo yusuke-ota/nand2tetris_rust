@@ -72,10 +72,10 @@ fn c_pop(filename: &str, segment: String, index: u32) -> String {
         "constant" => unreachable!(),
         "local" | "argument" | "this" | "that" =>
         format!(
-            "@{1}\n\
-                D=A\n\
-                @{0}\n\
-                D=M+D\n\
+            "@{0}\n\
+                D=M\n\
+                @{1}\n\
+                D=D+A\n\
                 @R13\n\
                 M=D\n\
                 @SP\n\
