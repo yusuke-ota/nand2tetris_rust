@@ -9,7 +9,7 @@ pub struct Parser {
     command: Option<String>,
 }
 
-pub trait IParser {
+pub trait ParserPublicAPI {
     fn has_more_commands(&self) -> bool;
     fn advance(&mut self);
     fn command_type(&self) -> CommandType;
@@ -21,12 +21,4 @@ pub trait IParser {
     /// * CFunction
     /// * CCall
     fn arg2(&self) -> u32;
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
 }

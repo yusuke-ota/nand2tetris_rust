@@ -1,4 +1,4 @@
-use crate::{ArithmeticAssemblyGenerator, CodeWriter, CommandAssemblyGenerator, ICodeWriter};
+use crate::{ArithmeticAsAssembly, CodeWriter, CommandAsAssembly, CodeWriterPublicAPI};
 use parser::arithmetic_type::ArithmeticType;
 use parser::command_type::CommandType;
 use std::convert::TryFrom;
@@ -6,7 +6,7 @@ use std::fs::File;
 use std::io::Write;
 use std::mem::swap;
 
-impl ICodeWriter for CodeWriter {
+impl CodeWriterPublicAPI for CodeWriter {
     fn new(file_name: &str) -> Self {
         let file = File::create(file_name).expect("Create file failed.");
         Self {

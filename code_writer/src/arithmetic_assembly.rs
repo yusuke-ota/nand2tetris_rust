@@ -1,7 +1,7 @@
-use crate::ArithmeticAssemblyGenerator;
+use crate::ArithmeticAsAssembly;
 use parser::arithmetic_type::ArithmeticType;
 
-impl ArithmeticAssemblyGenerator for ArithmeticType {
+impl ArithmeticAsAssembly for ArithmeticType {
     fn as_assembly(&self, label_num: &mut u32) -> Vec<u8> {
         return match self {
             ArithmeticType::Add => ADD.to_vec(),

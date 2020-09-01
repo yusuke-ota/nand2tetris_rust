@@ -1,7 +1,7 @@
-use crate::CommandAssemblyGenerator;
+use crate::CommandAsAssembly;
 use parser::command_type::CommandType;
 
-impl CommandAssemblyGenerator for CommandType {
+impl CommandAsAssembly for CommandType {
     fn as_assembly(&self, filename: &str, segment: String, index: u32) -> Vec<u8> {
         let mut assembly_str = match self {
             CommandType::CArithmetic => unreachable!(),

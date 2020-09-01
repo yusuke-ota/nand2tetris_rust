@@ -1,6 +1,6 @@
-use code_writer::{CodeWriter, ICodeWriter};
+use code_writer::{CodeWriter, CodeWriterPublicAPI};
 use parser::command_type::CommandType;
-use parser::{IParser, Parser};
+use parser::{Parser, ParserPublicAPI};
 use std::env;
 use std::fs::File;
 
@@ -16,10 +16,11 @@ fn main() {
     // 拡張子(.vm)を削除
     // Remove extension ".vm".
     let vm_extension: &[_] = &['.', 'v', 'm'];
-    let file_name = args[1].split('/').last().unwrap().trim_end_matches(vm_extension);
+    let file_path = args[1].trim_end_matches(vm_extension);
+    let mut code_writer = CodeWriter::new(&format!("{}.asm", file_path));
 
-    let mut code_writer = CodeWriter::new(&format!("{}.asm", file_name));
-    code_writer.set_file_name(file_name.to_string());
+    let file_name = file_path.split('\\').last().unwrap().to_string();
+    code_writer.set_file_name(file_name);
 
     while parser.has_more_commands() {
         parser.advance();

@@ -12,7 +12,7 @@ pub struct CodeWriter {
     label_number: u32,
 }
 
-pub trait ICodeWriter {
+pub trait CodeWriterPublicAPI {
     fn new(path: &str) -> Self;
     fn set_file_name(&mut self, file_name: String);
     fn write_arithmetic(&mut self, command: &str);
@@ -20,18 +20,10 @@ pub trait ICodeWriter {
     fn close(&mut self);
 }
 
-pub trait CommandAssemblyGenerator {
+trait CommandAsAssembly {
     fn as_assembly(&self, filename: &str, segment: String, index: u32) -> Vec<u8>;
 }
 
-pub trait ArithmeticAssemblyGenerator {
+trait ArithmeticAsAssembly {
     fn as_assembly(&self, label_num: &mut u32) -> Vec<u8>;
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
 }

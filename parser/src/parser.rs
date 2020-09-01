@@ -1,5 +1,5 @@
 use crate::command_type::CommandType;
-use crate::{IParser, Parser};
+use crate::{ParserPublicAPI, Parser};
 use std::convert::TryFrom;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -19,19 +19,14 @@ impl Parser {
     }
 }
 
-impl IParser for Parser {
+impl ParserPublicAPI for Parser {
     fn has_more_commands(&self) -> bool {
         self.stream.len() > 0
     }
 
     fn advance(&mut self) {
-        match self.has_more_commands() {
-            true => {
-                let command = self.stream.pop();
-                self.command = command;
-            }
-            false => (),
-        }
+        let command = self.stream.pop();
+        self.command = command;
     }
 
     /// Panic when command == None, command == "x", and "non_command _ _"
