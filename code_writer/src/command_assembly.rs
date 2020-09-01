@@ -29,12 +29,14 @@ fn c_push(filename: &str, segment: String, index: u32) -> String {
             WRITE_CURRENT, index
         ),
         "local" | "argument" | "this" | "that" => format!(
-            "@{1}\n\
-                A=A+{2}\n\
+            "@{2}\n\
+                D=A\n\
+                @{1}\n\
+                A=M+D\n\
                 D=M\n\
                 {0}",
             WRITE_CURRENT,
-            segment.to_uppercase(),
+            segment.as_segment(),
             index
         ),
         "pointer" =>
@@ -64,20 +66,27 @@ fn c_push(filename: &str, segment: String, index: u32) -> String {
         _ => panic!("c_push(): wrong argument was used."),
     };
 }
+
 fn c_pop(filename: &str, segment: String, index: u32) -> String {
     return match segment.as_str() {
         "constant" => unreachable!(),
-        "local" | "argument" | "this" | "that" => format!(
-            "@SP\n\
+        "local" | "argument" | "this" | "that" =>
+        format!(
+            "@{1}\n\
+                D=A\n\
+                @{0}\n\
+                D=M+D\n\
+                @R13\n\
+                M=D\n\
+                @SP\n\
                 AM=M-1\n\
                 D=M\n\
-                @{0}\n\
-                A=A+{1}\n\
+                @R13\n\
+                A=M\n\
                 M=D\n",
             segment.as_segment(),
             index
         ),
-        // todo: 対応するアセンブリを記載
         "pointer" =>
         // pointer address is "3".
         {
