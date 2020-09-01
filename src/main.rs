@@ -11,12 +11,15 @@ fn main() {
     }
     // &args[0]はこのバイナリの名前が入る
     // &args[0] is this application name.
-    let mut code_writer = CodeWriter::new(&args[1]);
     let mut parser = Parser::new(File::open(&args[1]).expect("Create file failed."));
 
-    // UNWRAP: path is "*/filename" or "filename", this .last() always success.
-    let file_name = args[1].split('/').last().unwrap().to_string();
-    code_writer.set_file_name(file_name);
+    // 拡張子(.vm)を削除
+    // Remove extension ".vm".
+    let vm_extension: &[_] = &['.', 'v', 'm'];
+    let file_name = args[1].split('/').last().unwrap().trim_end_matches(vm_extension);
+
+    let mut code_writer = CodeWriter::new(&format!("{}.asm", file_name));
+    code_writer.set_file_name(file_name.to_string());
 
     while parser.has_more_commands() {
         parser.advance();

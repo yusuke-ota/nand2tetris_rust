@@ -7,8 +7,8 @@ use std::io::Write;
 use std::mem::swap;
 
 impl ICodeWriter for CodeWriter {
-    fn new(path: &str) -> Self {
-        let file = File::create(path).expect("Create file failed.");
+    fn new(file_name: &str) -> Self {
+        let file = File::create(file_name).expect("Create file failed.");
         Self {
             file_name: None,
             export_dir: file,

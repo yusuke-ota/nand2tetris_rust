@@ -41,7 +41,7 @@ impl IParser for Parser {
             .split_whitespace()
             .next()
             .expect("command_type(): String == \"\"");
-        CommandType::try_from(command).unwrap()
+        CommandType::try_from(command).expect("convert failed")
     }
 
     fn arg1(&self) -> String {
