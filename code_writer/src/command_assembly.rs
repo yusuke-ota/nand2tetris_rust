@@ -157,7 +157,7 @@ trait StringUtility {
 impl StringUtility for String {
     fn as_segment(&self) -> &'static str {
         match self.as_str() {
-            "local" => "LOL",
+            "local" => "LCL",
             "argument" => "ARG",
             "this" => "THIS",
             "that" => "THAT",
