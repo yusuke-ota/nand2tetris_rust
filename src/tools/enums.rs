@@ -12,10 +12,10 @@ pub enum Symbol {
 }
 
 pub fn classification_symbol(symbol: &str) -> Symbol {
-    return match symbol.parse::<i32>() {
+    match symbol.parse::<i32>() {
         Ok(num) => Symbol::Address(num),
         Err(_) => Symbol::Symbol(symbol.to_string()),
-    };
+    }
 }
 
 pub enum DestType {

@@ -1,7 +1,7 @@
 use crate::tools::{CompType, DestType, JumpType};
 
 pub fn dest(dest_type: DestType) -> &'static str {
-    return match dest_type {
+    match dest_type {
         DestType::Null => "000",
         DestType::M => "001",
         DestType::D => "010",
@@ -10,11 +10,11 @@ pub fn dest(dest_type: DestType) -> &'static str {
         DestType::AM => "101",
         DestType::AD => "110",
         DestType::AMD => "111",
-    };
+    }
 }
 
 pub fn jump(jump_type: JumpType) -> &'static str {
-    return match jump_type {
+    match jump_type {
         JumpType::Null => "000",
         JumpType::JGT => "001",
         JumpType::JEQ => "010",
@@ -23,11 +23,11 @@ pub fn jump(jump_type: JumpType) -> &'static str {
         JumpType::JNE => "101",
         JumpType::JLE => "110",
         JumpType::JMP => "111",
-    };
+    }
 }
 
 pub fn comp(comp_type: CompType) -> &'static str {
-    return match comp_type {
+    match comp_type {
         CompType::Zero => "0101010",
         CompType::One => "0111111",
         CompType::MinusOne => "0111010",
@@ -56,5 +56,5 @@ pub fn comp(comp_type: CompType) -> &'static str {
         CompType::MMinusD => "1000111",
         CompType::DAndM => "1000000",
         CompType::DOrM => "1010101",
-    };
+    }
 }

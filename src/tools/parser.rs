@@ -46,16 +46,16 @@ impl IParser for Parser {
 
     fn command_type(&self) -> Result<CommandType, &'static str> {
         let first_char = self.command.as_ref().unwrap().chars().next().unwrap();
-        return match first_char {
+        match first_char {
             '@' => Ok(CommandType::ACommand(self.command.clone().unwrap())),
             '(' => Ok(CommandType::LCommand(self.command.clone().unwrap())),
             'A' | 'D' | 'M' | '0' => Ok(CommandType::CCommand(self.command.clone().unwrap())),
             _ => Err("Can't detect command type!"),
-        };
+        }
     }
 
     fn symbol(&self) -> Result<Symbol, &'static str> {
-        return match self.command_type() {
+        match self.command_type() {
             // A command: "@xxx" (x is number)
             Ok(CommandType::ACommand(command)) => {
                 let num = command.trim_start_matches('@');
@@ -67,7 +67,7 @@ impl IParser for Parser {
                 Ok(classification_symbol(symbol))
             }
             _ => Err("This type is not ACommand or LCommand!"),
-        };
+        }
     }
 
     fn dest(&self) -> Result<DestType, &'static str> {
@@ -93,7 +93,7 @@ impl IParser for Parser {
 
         let space_and_comment: &[_] = &['/', ' '];
         let white_space_or_comment = c_command.find(space_and_comment);
-        let end = white_space_or_comment.unwrap_or(c_command.len());
+        let end = white_space_or_comment.unwrap_or_else(|| c_command.len());
 
         let comp_string;
         // c command: "x=xxx" or "x;xxx" ()
@@ -118,9 +118,9 @@ impl IParser for Parser {
         }
         let space_and_comment: &[_] = &['/', ' '];
         let white_space_or_comment = c_command.find(space_and_comment);
-        let end = white_space_or_comment.unwrap_or(c_command.len());
+        let end = white_space_or_comment.unwrap_or_else(|| c_command.len());
 
-        let separate_place = c_command.find(";");
+        let separate_place = c_command.find(';');
         let jump_string;
         match separate_place {
             Some(num) => jump_string = &c_command[num + 1..end],
