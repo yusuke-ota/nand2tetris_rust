@@ -21,7 +21,7 @@ impl Parser {
 
 impl ParserPublicAPI for Parser {
     fn has_more_commands(&self) -> bool {
-        self.stream.len() > 0
+        !self.stream.is_empty()
     }
 
     fn advance(&mut self) {
@@ -42,7 +42,7 @@ impl ParserPublicAPI for Parser {
     fn arg1(&self) -> String {
         let command = self.command.as_ref().unwrap().clone();
         let command = command.split_whitespace().collect::<Vec<&str>>();
-        return match command[..] {
+        match command[..] {
             ["add"] => "add".to_string(),
             ["sub"] => "sub".to_string(),
             ["neg"] => "neg".to_string(),
@@ -54,11 +54,11 @@ impl ParserPublicAPI for Parser {
             ["not"] => "not".to_string(),
             [_command, arg1, ..] => arg1.to_string(),
             _ => panic!("arg1(): unexpected argument."),
-        };
+        }
     }
 
     fn arg2(&self) -> u32 {
-        let command = self.command.clone().unwrap().clone();
+        let command = self.command.clone().unwrap();
         let command = command.split_whitespace().collect::<Vec<&str>>();
         command[2].parse::<u32>().expect("arg2(): parse error.")
     }

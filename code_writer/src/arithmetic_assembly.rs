@@ -3,7 +3,7 @@ use parser::arithmetic_type::ArithmeticType;
 
 impl ArithmeticAsAssembly for ArithmeticType {
     fn as_assembly(&self, label_num: &mut u32) -> Vec<u8> {
-        return match self {
+        match self {
             ArithmeticType::Add => ADD.to_vec(),
             ArithmeticType::Sub => SUB.to_vec(),
             ArithmeticType::Neg => NEG.to_vec(),
@@ -13,7 +13,7 @@ impl ArithmeticAsAssembly for ArithmeticType {
             ArithmeticType::And => AND.to_vec(),
             ArithmeticType::Or => OR.to_vec(),
             ArithmeticType::Not => NOT.to_vec(),
-        };
+        }
     }
 }
 
@@ -24,7 +24,7 @@ impl ArithmeticAsAssembly for ArithmeticType {
 // DレジスタにM(=A(一番上のアドレス)の中身)を代入
 // スタックの一番上に現在のDレジスタの値-Aレジスタの値を代入する
 // スタックを一つ進める
-const ADD: &'static [u8; 42] = b"@SP\n\
+const ADD: &[u8; 42] = b"@SP\n\
     AM=M-1\n\
     D=M\n\
     @SP\n\
@@ -35,7 +35,7 @@ const ADD: &'static [u8; 42] = b"@SP\n\
 
 // A-Bがあったとき、M=D-MだとB-Aになってしまう
 // 順番注意
-const SUB: &'static [u8; 42] = b"@SP\n\
+const SUB: &[u8; 42] = b"@SP\n\
     AM=M-1\n\
     D=M\n\
     @SP\n\
@@ -44,13 +44,13 @@ const SUB: &'static [u8; 42] = b"@SP\n\
     @SP\n\
     M=M+1\n";
 
-const NEG: &'static [u8; 26] = b"@SP\n\
+const NEG: &[u8; 26] = b"@SP\n\
     AM=M-1\n\
     M=-M\n\
     @SP\n\
     M=M+1\n";
 
-const AND: &'static [u8; 42] = b"@SP\n\
+const AND: &[u8; 42] = b"@SP\n\
     AM=M-1\n\
     D=M\n\
     @SP\n\
@@ -59,7 +59,7 @@ const AND: &'static [u8; 42] = b"@SP\n\
     @SP\n\
     M=M+1\n";
 
-const OR: &'static [u8; 42] = b"@SP\n\
+const OR: &[u8; 42] = b"@SP\n\
     AM=M-1\n\
     D=M\n\
     @SP\n\
@@ -68,7 +68,7 @@ const OR: &'static [u8; 42] = b"@SP\n\
     @SP\n\
     M=M+1\n";
 
-const NOT: &'static [u8; 26] = b"@SP\n\
+const NOT: &[u8; 26] = b"@SP\n\
     AM=M-1\n\
     M=!M\n\
     @SP\n\
