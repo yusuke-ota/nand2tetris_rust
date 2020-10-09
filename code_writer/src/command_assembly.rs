@@ -21,7 +21,7 @@ impl CommandAsAssembly for CommandType {
 }
 
 fn c_push(filename: &str, segment: String, index: u32) -> String {
-    return match segment.as_str() {
+    match segment.as_str() {
         "constant" => format!(
             "@{1}\n\
                 D=A\n\
@@ -64,11 +64,11 @@ fn c_push(filename: &str, segment: String, index: u32) -> String {
             WRITE_CURRENT, filename, index
         ),
         _ => panic!("c_push(): wrong argument was used."),
-    };
+    }
 }
 
 fn c_pop(filename: &str, segment: String, index: u32) -> String {
-    return match segment.as_str() {
+    match segment.as_str() {
         "constant" => unreachable!(),
         "local" | "argument" | "this" | "that" => format!(
             "@{0}\n\
@@ -115,7 +115,7 @@ fn c_pop(filename: &str, segment: String, index: u32) -> String {
             filename, index
         ),
         _ => panic!("c_push(): wrong argument was used."),
-    };
+    }
 }
 
 fn c_label(segment: String, index: u32) -> String {
@@ -143,7 +143,7 @@ fn c_call(segment: String, index: u32) -> String {
     format!("{} {}", segment, index)
 }
 
-const WRITE_CURRENT: &'static str = "@SP\n\
+const WRITE_CURRENT: &str = "@SP\n\
         A=M\n\
         M=D\n\
         @SP\n\

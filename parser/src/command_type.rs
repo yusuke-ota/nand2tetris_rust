@@ -17,7 +17,7 @@ impl TryFrom<&str> for CommandType {
     type Error = &'static str;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
-        return match value {
+        match value {
             "add" | "sub" | "neg" | "eq" | "gt" | "lt" | "and" | "or" | "not" => {
                 Ok(CommandType::CArithmetic)
             }
@@ -31,6 +31,6 @@ impl TryFrom<&str> for CommandType {
             "C_Return" => Ok(CommandType::CReturn),
             "C_Call" => Ok(CommandType::CCall),
             _ => Err("Cannot convert &str to CommandType"),
-        };
+        }
     }
 }
