@@ -126,18 +126,21 @@ mod tests {
     fn command_type_test() {
         let mut dummy_parser = generate_dummy_parser(
             "add\nsub\nneg\neq\ngt\nlt\nand\nor\nnot\n\
-            push\npop\n",
+            push\npop\nlabel\ngoto\nif-goto\n",
         );
         let compare_list = [
             CommandType::CArithmetic,
             CommandType::CPush,
             CommandType::CPop,
+            CommandType::CLabel,
+            CommandType::CGoto,
+            CommandType::CIf
         ];
         for _ in 0..9_usize {
             dummy_parser.advance();
             assert_eq!(dummy_parser.command_type(), compare_list[0]);
         }
-        for index in 9..11_usize {
+        for index in 9..14_usize {
             dummy_parser.advance();
             assert_eq!(dummy_parser.command_type(), compare_list[index - 8]);
         }
@@ -147,11 +150,11 @@ mod tests {
     fn arg1_test() {
         let mut dummy_parser = generate_dummy_parser(
             "add\nsub\nneg\neq\ngt\nlt\nand\nor\nnot\n\
-            push local 2\npop local 2\n", // todo: 8章
+            push local 2\npop local 2\nlabel Label\ngoto Label\nif-goto Label", // todo: 8章
         );
         let compare_list = [
             "add", "sub", "neg", "eq", "gt", "lt", "and", "or", "not", "local",
-            "local", // todo: 8章
+            "local", "label", "goto", "if-goto" // todo: 8章
         ];
         for index in 0..11_usize {
             dummy_parser.advance();
