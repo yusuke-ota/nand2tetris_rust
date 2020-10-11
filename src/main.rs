@@ -9,11 +9,9 @@ fn main() {
     if args.len() <= 1 {
         panic!("Please input file path")
     }
-    // &args[0]はこのバイナリの名前が入る
     // &args[0] is this application name.
     let mut parser = Parser::new(File::open(&args[1]).expect("Create file failed."));
 
-    // 拡張子(.vm)を削除
     // Remove extension ".vm".
     let vm_extension: &[_] = &['.', 'v', 'm'];
     let file_path = args[1].trim_end_matches(vm_extension);
@@ -30,6 +28,7 @@ fn main() {
     code_writer.close();
 }
 
+/// Generate assembly and write to code_writer.
 fn process_command(parser: &Parser, code_writer: &mut CodeWriter) {
     match parser.command_type() {
         CommandType::CArithmetic => {

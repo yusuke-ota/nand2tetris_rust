@@ -20,17 +20,23 @@ impl Parser {
 }
 
 impl ParserPublicAPI for Parser {
+    /// Check next command is exist, and return true.
     fn has_more_commands(&self) -> bool {
         !self.stream.is_empty()
     }
 
+    /// Get next command from `Vec<String>`.
+    /// This method is called when `.has_more_commands()` is true.
     fn advance(&mut self) {
         let command = self.stream.pop();
         self.command = command;
     }
 
-    /// Panic when command == None, command == "x", and "non_command _ _"
+    /// Convert to command type from `Parser.command`.
+    /// Panic when command == None, command == "x", and "non_command _ _".
     fn command_type(&self) -> CommandType {
+        // `.arg1()` and `.arg2()` also use self.command.
+        // So, clone() can't remove.
         let command = self.command.as_ref().unwrap().clone();
         let command = command
             .split_whitespace()
@@ -39,7 +45,11 @@ impl ParserPublicAPI for Parser {
         CommandType::try_from(command).expect("convert failed")
     }
 
+    /// `.arg1()` shouldn't call when Parser::command is CReturn.
+    /// Panic when command == "return _".
     fn arg1(&self) -> String {
+        // When command_type is CPush, CPop, ... arg2() also use.
+        // So, clone() can't remove.
         let command = self.command.as_ref().unwrap().clone();
         let command = command.split_whitespace().collect::<Vec<&str>>();
         match command[..] {
@@ -57,8 +67,9 @@ impl ParserPublicAPI for Parser {
         }
     }
 
+    /// This function should call when Parser::command is CPush, CPop, CFunction or CCall.
     fn arg2(&self) -> u32 {
-        let command = self.command.clone().unwrap();
+        let command = self.command.as_ref().unwrap();
         let command = command.split_whitespace().collect::<Vec<&str>>();
         command[2].parse::<u32>().expect("arg2(): parse error.")
     }
@@ -74,6 +85,7 @@ fn separate_line(mut buf_reader: BufReader<File>) -> Vec<String> {
         if !trimmed_buf.starts_with('/') && trimmed_buf != "" {
             result.push(trimmed_buf.to_string());
         }
+        // Clear and reuse buf. This reduce memory allocation from new String.
         buf.clear();
     }
 
