@@ -59,15 +59,18 @@ impl CodeWriterPublicAPI for CodeWriter {
     }
 
     fn write_call(&mut self, function_name: String, num_args: u32) {
-        unimplemented!()
+        let mut assemble_code = CommandType::CCall.as_assembly("", function_name, num_args);
+        self.write_buffer.append(&mut assemble_code);
     }
 
     fn write_return(&mut self) {
-        unimplemented!()
+        let mut assemble_code = CommandType::CReturn.as_assembly("", String::default(), 0);
+        self.write_buffer.append(&mut assemble_code);
     }
 
     fn write_function(&mut self, function_name: String, num_locals: u32) {
-        unimplemented!()
+        let mut assemble_code = CommandType::CFunction.as_assembly("", function_name, num_locals);
+        self.write_buffer.append(&mut assemble_code);
     }
 
     fn close(&mut self) {
