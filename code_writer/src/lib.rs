@@ -14,9 +14,16 @@ pub struct CodeWriter {
 
 pub trait CodeWriterPublicAPI {
     fn new(path: &str) -> Self;
+    fn write_init(&mut self);
     fn set_file_name(&mut self, file_name: String);
     fn write_arithmetic(&mut self, command: &str);
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32);
+    fn write_label(&mut self, label: String);
+    fn write_goto(&mut self, label: String);
+    fn write_if(&mut self, label: String);
+    fn write_call(&mut self, function_name: String, num_args: u32);
+    fn write_return(&mut self);
+    fn write_function(&mut self, function_name: String, num_locals: u32);
     fn close(&mut self);
 }
 

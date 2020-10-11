@@ -45,9 +45,18 @@ fn process_command(parser: &Parser, code_writer: &mut CodeWriter) {
             let index = parser.arg2();
             code_writer.write_push_pop(CommandType::CPop, segment, index)
         }
-        CommandType::CLabel => unimplemented!(),
-        CommandType::CGoto => unimplemented!(),
-        CommandType::CIf => unimplemented!(),
+        CommandType::CLabel => {
+            let segment = parser.arg1();
+            code_writer.write_label(segment);
+        },
+        CommandType::CGoto => {
+            let segment = parser.arg1();
+            code_writer.write_goto(segment);
+        },
+        CommandType::CIf => {
+            let segment = parser.arg1();
+            code_writer.write_if(segment);
+        },
         CommandType::CFunction => unimplemented!(),
         CommandType::CReturn => unimplemented!(),
         CommandType::CCall => unimplemented!(),

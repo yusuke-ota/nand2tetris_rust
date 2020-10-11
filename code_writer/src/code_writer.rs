@@ -17,6 +17,10 @@ impl CodeWriterPublicAPI for CodeWriter {
         }
     }
 
+    fn write_init(&mut self) {
+        unimplemented!()
+    }
+
     fn set_file_name(&mut self, file_name: String) {
         self.file_name = Some(file_name);
     }
@@ -34,6 +38,36 @@ impl CodeWriterPublicAPI for CodeWriter {
             index,
         );
         self.write_buffer.append(&mut assemble_code);
+    }
+
+    fn write_label(&mut self, label: String) {
+        // "" and 0 are not used, label only.
+        let mut assemble_code = CommandType::CLabel.as_assembly("", label, 0);
+        self.write_buffer.append(&mut assemble_code);
+    }
+
+    fn write_goto(&mut self, label: String) {
+        // "" and 0 are not used, label only.
+        let mut assemble_code = CommandType::CGoto.as_assembly("", label, 0);
+        self.write_buffer.append(&mut assemble_code);
+    }
+
+    fn write_if(&mut self, label: String) {
+        // "" and 0 are not used, label only.
+        let mut assemble_code = CommandType::CIf.as_assembly("", label, 0);
+        self.write_buffer.append(&mut assemble_code);
+    }
+
+    fn write_call(&mut self, function_name: String, num_args: u32) {
+        unimplemented!()
+    }
+
+    fn write_return(&mut self) {
+        unimplemented!()
+    }
+
+    fn write_function(&mut self, function_name: String, num_locals: u32) {
+        unimplemented!()
     }
 
     fn close(&mut self) {

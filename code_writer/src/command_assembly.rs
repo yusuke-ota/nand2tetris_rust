@@ -7,9 +7,9 @@ impl CommandAsAssembly for CommandType {
             CommandType::CArithmetic => unreachable!(),
             CommandType::CPush => c_push(filename, segment, index),
             CommandType::CPop => c_pop(filename, segment, index),
-            CommandType::CLabel => c_label(segment, index),
-            CommandType::CGoto => c_goto(segment, index),
-            CommandType::CIf => c_if(segment, index),
+            CommandType::CLabel => c_label(segment),
+            CommandType::CGoto => c_goto(segment),
+            CommandType::CIf => c_if(segment),
             CommandType::CFunction => c_function(segment, index),
             CommandType::CReturn => c_return(segment, index),
             CommandType::CCall => c_call(segment, index),
@@ -118,17 +118,22 @@ fn c_pop(filename: &str, segment: String, index: u32) -> String {
     }
 }
 
-fn c_label(segment: String, index: u32) -> String {
-    // todo: 8章
-    format!("{} {}", segment, index)
+fn c_label(segment: String) -> String {
+    format!("({})\n", segment)
 }
-fn c_goto(segment: String, index: u32) -> String {
-    // todo: 8章
-    format!("{} {}", segment, index)
+
+fn c_goto(segment: String) -> String {
+    format!("goto ({})\n", segment)
 }
-fn c_if(segment: String, index: u32) -> String {
-    // todo: 8章
-    format!("{} {}", segment, index)
+
+fn c_if(segment: String) -> String {
+    format!(
+        "@SP\n\
+        AM=M-1\n\
+        D=M\n\
+        @{}\n\
+        D;JNE\n",
+        segment)
 }
 fn c_function(segment: String, index: u32) -> String {
     // todo: 8章
