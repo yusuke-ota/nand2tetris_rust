@@ -123,7 +123,10 @@ fn c_label(segment: String) -> String {
 }
 
 fn c_goto(segment: String) -> String {
-    format!("goto ({})\n", segment)
+    format!(
+        "@{}\n\
+        0;JEQ\n",
+        segment)
 }
 
 fn c_if(segment: String) -> String {
