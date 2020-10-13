@@ -14,11 +14,19 @@ impl CodeWriterPublicAPI for CodeWriter {
             export_dir: file,
             write_buffer: Vec::<u8>::new(),
             label_number: 0,
+            recent_function: None,
         }
     }
 
     fn write_init(&mut self) {
-        unimplemented!()
+        let init_stack_pointer =
+            "@256\n\
+            D=A\n\
+            @SP\n\
+            M=D\n";
+        self.write_buffer.append(init_stack_pointer.as_bytes().to_vec().as_mut());
+        let mut assemble_code = CommandType::CCall.as_assembly(self, "Sys.init".to_string(), 0);
+        self.write_buffer.append(&mut assemble_code);
     }
 
     fn set_file_name(&mut self, file_name: String) {
@@ -33,44 +41,40 @@ impl CodeWriterPublicAPI for CodeWriter {
     }
 
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32) {
-        let mut assemble_code = command.as_assembly(
-            self.file_name.as_ref().expect("file name isn't set."),
-            segment,
-            index,
-        );
+        let mut assemble_code = command.as_assembly(self, segment, index);
         self.write_buffer.append(&mut assemble_code);
     }
 
     fn write_label(&mut self, label: String) {
         // "" and 0 are not used, label only.
-        let mut assemble_code = CommandType::CLabel.as_assembly("", label, 0);
+        let mut assemble_code = CommandType::CLabel.as_assembly(self, label, 0);
         self.write_buffer.append(&mut assemble_code);
     }
 
     fn write_goto(&mut self, label: String) {
         // "" and 0 are not used, label only.
-        let mut assemble_code = CommandType::CGoto.as_assembly("", label, 0);
+        let mut assemble_code = CommandType::CGoto.as_assembly(self, label, 0);
         self.write_buffer.append(&mut assemble_code);
     }
 
     fn write_if(&mut self, label: String) {
         // "" and 0 are not used, label only.
-        let mut assemble_code = CommandType::CIf.as_assembly("", label, 0);
+        let mut assemble_code = CommandType::CIf.as_assembly(self, label, 0);
         self.write_buffer.append(&mut assemble_code);
     }
 
     fn write_call(&mut self, function_name: String, num_args: u32) {
-        let mut assemble_code = CommandType::CCall.as_assembly("", function_name, num_args);
+        let mut assemble_code = CommandType::CCall.as_assembly(self, function_name, num_args);
         self.write_buffer.append(&mut assemble_code);
     }
 
     fn write_return(&mut self) {
-        let mut assemble_code = CommandType::CReturn.as_assembly("", String::default(), 0);
+        let mut assemble_code = CommandType::CReturn.as_assembly(self, String::default(), 0);
         self.write_buffer.append(&mut assemble_code);
     }
 
     fn write_function(&mut self, function_name: String, num_locals: u32) {
-        let mut assemble_code = CommandType::CFunction.as_assembly("", function_name, num_locals);
+        let mut assemble_code = CommandType::CFunction.as_assembly(self, function_name, num_locals);
         self.write_buffer.append(&mut assemble_code);
     }
 

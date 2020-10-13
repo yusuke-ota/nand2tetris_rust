@@ -10,6 +10,7 @@ pub struct CodeWriter {
     export_dir: File,
     write_buffer: Vec<u8>,
     label_number: u32,
+    recent_function: Option<String>,
 }
 
 pub trait CodeWriterPublicAPI {
@@ -28,7 +29,7 @@ pub trait CodeWriterPublicAPI {
 }
 
 trait CommandAsAssembly {
-    fn as_assembly(&self, filename: &str, segment: String, index: u32) -> Vec<u8>;
+    fn as_assembly(&self, code_writer: &mut CodeWriter, segment: String, index: u32) -> Vec<u8>;
 }
 
 trait ArithmeticAsAssembly {

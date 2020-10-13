@@ -2,30 +2,61 @@ use code_writer::{CodeWriter, CodeWriterPublicAPI};
 use parser::command_type::CommandType;
 use parser::{Parser, ParserPublicAPI};
 use std::env;
-use std::fs::File;
+use std::fs::{metadata, read_dir, File};
 
 fn main() -> anyhow::Result<()> {
     let args = env::args().collect::<Vec<String>>();
     if args.len() <= 1 {
         panic!("Please input file path")
     }
-    // &args[0] is this application name.
-    let mut parser = Parser::new(File::open(&args[1]).expect("Create file failed."));
 
-    // Remove extension ".vm".
-    let vm_extension: &[_] = &['.', 'v', 'm'];
-    let file_path = args[1].trim_end_matches(vm_extension);
-    let mut code_writer = CodeWriter::new(&format!("{}.asm", file_path));
+    let metadata = metadata(&args[1]).expect("Such does not exist.");
+    let mut code_writer;
+    match metadata.is_dir() {
+        false => {
+            // Remove extension ".vm".
+            // &args[0] is this application name.
+            let file_path = args[1].trim_end_matches(".vm");
+            code_writer = CodeWriter::new(&format!("{}.asm", file_path));
+            code_writer.write_init();
+            let mut parser = Parser::new(File::open(&args[1]).expect("Create file failed."));
 
-    let file_name = file_path.split('\\').last().unwrap().to_string();
+            process_file(&args[1], &mut code_writer, &mut parser)?;
+        }
+        true => {
+            // UNWRAP: Method.last() is always Some(). Method.last() search iter until None and return latest Some().
+            let folder_name = args[1].trim_end_matches('\\').split('\\').last().unwrap();
+            code_writer = CodeWriter::new(&format!("{}\\{}.asm", &args[1], folder_name));
+            code_writer.write_init();
+
+            let folder = read_dir(&args[1]).expect("Folder does not exist.");
+            for something_in_folder in folder {
+                if let Ok(file_in_folder) = something_in_folder {
+                    // UNWRAP(): file path is utf-8.
+                    let file_path = file_in_folder.path().to_string_lossy().to_string();
+                    if file_path.contains(".vm") {
+                        // UNWRAP(): Checked at `dir_entry?`
+                        let mut parser = Parser::new(File::open(&file_path).unwrap());
+                        process_file(&file_path, &mut code_writer, &mut parser)?;
+                    }
+                }
+            }
+        }
+    }
+
+    code_writer.close();
+    Ok(())
+}
+
+fn process_file(file_path: &str, code_writer: &mut CodeWriter, parser: &mut Parser) -> anyhow::Result<()> {
+    let file_name = file_path.split('\\').last().unwrap().trim_end_matches(".vm").to_string();
     code_writer.set_file_name(file_name);
 
     while parser.has_more_commands() {
         parser.advance();
-        process_command(&parser, &mut code_writer);
+        process_command(parser, code_writer)?;
     }
-
-    code_writer.close();
+    Ok(())
 }
 
 /// Generate assembly and write to code_writer.
