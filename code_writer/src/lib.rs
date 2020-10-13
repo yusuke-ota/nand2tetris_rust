@@ -29,10 +29,12 @@ pub trait CodeWriterPublicAPI {
     fn close(&mut self);
 }
 
+/// Generate assembly from command.
 trait CommandAsAssembly {
     fn as_assembly(&self, code_writer: &mut CodeWriter, segment: String, index: u32) -> Vec<u8>;
 }
 
+/// Generate assembly from arithmetic command.
 trait ArithmeticAsAssembly {
     fn as_assembly(&self, label_num: &mut u32) -> Vec<u8>;
 }

@@ -12,6 +12,9 @@ fn main() -> anyhow::Result<()> {
 
     let metadata = metadata(&args[1]).expect("Such does not exist.");
     let mut code_writer;
+
+    // "metadata.is_dir() = true" => arg[1] is directory.
+    // "metadata.is_dir() = false" => arg[1] is file.
     match metadata.is_dir() {
         false => {
             // Remove extension ".vm".
@@ -30,6 +33,7 @@ fn main() -> anyhow::Result<()> {
             code_writer.write_init();
 
             let folder = read_dir(&args[1]).expect("Folder does not exist.");
+            // Process files in folder.
             for something_in_folder in folder {
                 if let Ok(file_in_folder) = something_in_folder {
                     // UNWRAP(): file path is utf-8.
@@ -48,6 +52,7 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
+/// Use method.process_command() until parser.has_more_commands() is true.
 fn process_file(
     file_path: &str,
     code_writer: &mut CodeWriter,
