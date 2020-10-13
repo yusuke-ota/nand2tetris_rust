@@ -23,13 +23,12 @@ impl TryFrom<&str> for CommandType {
             }
             "push" => Ok(CommandType::CPush),
             "pop" => Ok(CommandType::CPop),
-            // todo:　.vm内のものに変更
-            "C_Label" => Ok(CommandType::CLabel),
-            "C_Goto" => Ok(CommandType::CGoto),
-            "C_If" => Ok(CommandType::CIf),
-            "C_Function" => Ok(CommandType::CFunction),
-            "C_Return" => Ok(CommandType::CReturn),
-            "C_Call" => Ok(CommandType::CCall),
+            "label" => Ok(CommandType::CLabel),
+            "goto" => Ok(CommandType::CGoto),
+            "if-goto" => Ok(CommandType::CIf),
+            "function" => Ok(CommandType::CFunction),
+            "return" => Ok(CommandType::CReturn),
+            "call" => Ok(CommandType::CCall),
             _ => Err("Cannot convert &str to CommandType"),
         }
     }

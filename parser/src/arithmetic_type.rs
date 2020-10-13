@@ -13,7 +13,7 @@ pub enum ArithmeticType {
 }
 
 impl TryFrom<&str> for ArithmeticType {
-    type Error = &'static str;
+    type Error = anyhow::Error;
 
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         match value {
@@ -26,7 +26,7 @@ impl TryFrom<&str> for ArithmeticType {
             "and" => Ok(Self::And),
             "or" => Ok(Self::Or),
             "not" => Ok(Self::Not),
-            _ => Err("Convert error"),
+            _ => Err(anyhow::anyhow!("Convert error: {}", value)),
         }
     }
 }
