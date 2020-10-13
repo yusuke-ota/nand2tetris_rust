@@ -30,6 +30,7 @@ impl ParserPublicAPI for Parser {
     fn advance(&mut self) {
         let command = self.stream.pop();
         self.command = command;
+        // println!("{:?}", self.command);
     }
 
     /// Convert to command type from `Parser.command`.
@@ -53,15 +54,15 @@ impl ParserPublicAPI for Parser {
         let command = self.command.as_ref().unwrap().clone();
         let command = command.split_whitespace().collect::<Vec<&str>>();
         match command[..] {
-            ["add"] => "add".to_string(),
-            ["sub"] => "sub".to_string(),
-            ["neg"] => "neg".to_string(),
-            ["eq"] => "eq".to_string(),
-            ["gt"] => "gt".to_string(),
-            ["lt"] => "lt".to_string(),
-            ["and"] => "and".to_string(),
-            ["or"] => "or".to_string(),
-            ["not"] => "not".to_string(),
+            ["add", ..] => "add".to_string(),
+            ["sub", ..] => "sub".to_string(),
+            ["neg", ..] => "neg".to_string(),
+            ["eq", ..] => "eq".to_string(),
+            ["gt", ..] => "gt".to_string(),
+            ["lt", ..] => "lt".to_string(),
+            ["and", ..] => "and".to_string(),
+            ["or", ..] => "or".to_string(),
+            ["not", ..] => "not".to_string(),
             [_command, arg1, ..] => arg1.to_string(),
             _ => panic!("arg1(): unexpected argument."),
         }

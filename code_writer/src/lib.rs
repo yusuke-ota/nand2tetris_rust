@@ -16,7 +16,7 @@ pub trait CodeWriterPublicAPI {
     fn new(path: &str) -> Self;
     fn write_init(&mut self);
     fn set_file_name(&mut self, file_name: String);
-    fn write_arithmetic(&mut self, command: &str);
+    fn write_arithmetic(&mut self, command: &str) -> anyhow::Result<()>;
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32);
     fn write_label(&mut self, label: String);
     fn write_goto(&mut self, label: String);

@@ -25,10 +25,11 @@ impl CodeWriterPublicAPI for CodeWriter {
         self.file_name = Some(file_name);
     }
 
-    fn write_arithmetic(&mut self, command: &str) {
-        let arithmetic_type = ArithmeticType::try_from(command).unwrap_or_else(|err| panic!(err));
+    fn write_arithmetic(&mut self, command: &str) -> anyhow::Result<()> {
+        let arithmetic_type = ArithmeticType::try_from(command)?;
         self.write_buffer
             .append(&mut arithmetic_type.as_assembly(&mut self.label_number));
+        Ok(())
     }
 
     fn write_push_pop(&mut self, command: CommandType, segment: String, index: u32) {

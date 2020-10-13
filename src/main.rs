@@ -4,7 +4,7 @@ use parser::{Parser, ParserPublicAPI};
 use std::env;
 use std::fs::File;
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let args = env::args().collect::<Vec<String>>();
     if args.len() <= 1 {
         panic!("Please input file path")
@@ -29,46 +29,55 @@ fn main() {
 }
 
 /// Generate assembly and write to code_writer.
-fn process_command(parser: &Parser, code_writer: &mut CodeWriter) {
+fn process_command(parser: &Parser, code_writer: &mut CodeWriter) -> anyhow::Result<()> {
     match parser.command_type() {
         CommandType::CArithmetic => {
             let arithmetic_type = parser.arg1();
-            code_writer.write_arithmetic(arithmetic_type.as_str())
+            code_writer.write_arithmetic(arithmetic_type.as_str())?;
+            Ok(())
         }
         CommandType::CPush => {
             let segment = parser.arg1();
             let index = parser.arg2();
-            code_writer.write_push_pop(CommandType::CPush, segment, index)
+            code_writer.write_push_pop(CommandType::CPush, segment, index);
+            Ok(())
         }
         CommandType::CPop => {
             let segment = parser.arg1();
             let index = parser.arg2();
-            code_writer.write_push_pop(CommandType::CPop, segment, index)
+            code_writer.write_push_pop(CommandType::CPop, segment, index);
+            Ok(())
         }
         CommandType::CLabel => {
             let label = parser.arg1();
             code_writer.write_label(label);
+            Ok(())
         }
         CommandType::CGoto => {
             let label = parser.arg1();
             code_writer.write_goto(label);
+            Ok(())
         }
         CommandType::CIf => {
             let label = parser.arg1();
             code_writer.write_if(label);
+            Ok(())
         }
         CommandType::CFunction => {
             let function_name = parser.arg1();
             let num_locals = parser.arg2();
             code_writer.write_function(function_name, num_locals);
+            Ok(())
         }
         CommandType::CReturn => {
             code_writer.write_return();
+            Ok(())
         }
         CommandType::CCall => {
             let function_name = parser.arg1();
             let num_args = parser.arg2();
             code_writer.write_call(function_name, num_args);
+            Ok(())
         }
     }
 }
