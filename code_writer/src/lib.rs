@@ -4,6 +4,7 @@ mod command_assembly;
 
 use parser::command_type::CommandType;
 use std::fs::File;
+use parser::anyhow;
 
 pub struct CodeWriter {
     file_name: Option<String>,

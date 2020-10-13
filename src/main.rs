@@ -1,6 +1,6 @@
 use code_writer::{CodeWriter, CodeWriterPublicAPI};
 use parser::command_type::CommandType;
-use parser::{Parser, ParserPublicAPI};
+use parser::{Parser, ParserPublicAPI, anyhow};
 use std::env;
 use std::fs::{metadata, read_dir, File};
 

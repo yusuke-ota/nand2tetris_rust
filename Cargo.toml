@@ -1,6 +1,6 @@
 [package]
 name = "vm_transtalor"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["yusuke ota <33338085+yusuke-ota@users.noreply.github.com>"]
 edition = "2018"
 
@@ -9,4 +9,3 @@ edition = "2018"
 [dependencies]
 parser = { path = "./parser"}
 code_writer = { path = "./code_writer"}
-anyhow = "1.0.33"

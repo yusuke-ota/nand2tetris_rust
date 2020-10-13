@@ -2,6 +2,8 @@ pub mod arithmetic_type;
 pub mod command_type;
 pub mod parser;
 
+pub use anyhow;
+
 use crate::command_type::CommandType;
 
 pub struct Parser {
