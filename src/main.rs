@@ -1,6 +1,6 @@
-use code_writer::{CodeWriter, CodeWriterPublicAPI};
+use code_writer::{CodeWriter, CodeWriterPublicAPI, Optimizer};
 use parser::command_type::CommandType;
-use parser::{Parser, ParserPublicAPI, anyhow};
+use parser::{anyhow, Parser, ParserPublicAPI};
 use std::env;
 use std::fs::{metadata, read_dir, File};
 
@@ -48,6 +48,7 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
+    code_writer.optimize()?;
     code_writer.close();
     Ok(())
 }

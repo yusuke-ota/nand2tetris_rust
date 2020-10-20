@@ -1,6 +1,7 @@
 mod arithmetic_assembly;
 mod code_writer;
 mod command_assembly;
+mod optimize;
 
 use parser::command_type::CommandType;
 use std::fs::File;
@@ -27,6 +28,11 @@ pub trait CodeWriterPublicAPI {
     fn write_return(&mut self);
     fn write_function(&mut self, function_name: String, num_locals: u32);
     fn close(&mut self);
+}
+
+pub trait Optimizer{
+    fn optimize(&mut self) -> anyhow::Result<()>;
+    fn remove_sp_minus_sp_plus(&mut self) -> anyhow::Result<()>;
 }
 
 /// Generate assembly from command.
