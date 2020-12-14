@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - Build build_ch6
+    - name: Build build_ch6
       run: cargo build --verbose
       working-directory: ./ch6_assembler
     - name: Build build_ch7_8
