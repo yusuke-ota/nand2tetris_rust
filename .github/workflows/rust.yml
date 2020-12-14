@@ -11,12 +11,16 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
+    - Build build_ch6
       run: cargo build --verbose
-    - name: Run tests
+      working-directory: ./ch6_assembler
+    - name: Build build_ch7_8
+      run: cargo build --verbose
+      working-directory: ./ch7_ch8_vm_translator
+    - name: Run test_ch7_8
       run: cargo test --verbose --package parser --lib parser::tests
+      working-directory: ./ch7_ch8_vm_translator
