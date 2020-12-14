@@ -1,4 +1,9 @@
+# builded files
 */target
-*/Cargo.lock
 
+# Dependent package info
+*/Cargo.lock
+Cargo.lock
+
+# IDE configs.
 .idea
